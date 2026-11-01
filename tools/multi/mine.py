@@ -18,14 +18,13 @@ from __future__ import annotations
 
 import collections
 import json
-import struct
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from guo.uomap import STATIC_SIZE, open_facet  # noqa: E402
+from guo.uomap import open_facet  # noqa: E402
 from guo.uoread import TileData  # noqa: E402
 from multifile import Component, Multis, bounds  # noqa: E402
 from pieces import STRUCTURAL, flag_names, majority, material, role  # noqa: E402
@@ -317,7 +316,7 @@ def scan_statics(data_dir: Path, facet: int, pieces: Pieces, x_limit: int = DUNG
                 off, length = f.statics_span(f.number(bx, by))
                 if not length:
                     continue
-                for sid, x, y, z, _hue in struct.iter_unpack("<HBBbH", f.sta[off:off + length - length % STATIC_SIZE]):
+                for sid, x, y, z, _hue in f.statics_records(off, length):
                     if sid in (0, 0xFFFF):
                         continue
                     out.append((sid, (bx << 3) + x, (by << 3) + y, z))

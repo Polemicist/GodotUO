@@ -11,7 +11,8 @@ number ``bx * height_in_blocks + by``. In the UOP, entry ``n`` (hashed from
 ``build/map<N>legacymul/<n:08d>.dat``) holds blocks ``n*4096 .. n*4096+4095``.
 Statics are ``staidx<N>.mul`` (12 bytes per block: int32 offset, int32 length,
 int32 extra) into ``statics<N>.mul`` (7 bytes per static: ushort id, byte x,
-byte y, sbyte z, ushort hue).
+byte y, sbyte z, ushort hue). A statics file that starts with ``SOSWIDE1``
+holds 9-byte records with a uint32 id instead (docs/data_formats.md section 53).
 """
 
 from __future__ import annotations
@@ -24,6 +25,10 @@ from pathlib import Path
 
 MAP_BLOCK = 196
 STATIC_SIZE = 7
+STATIC_FMT = "<HBBbH"
+WIDE_MAGIC = b"SOSWIDE1"
+WIDE_STATIC_SIZE = 9
+WIDE_STATIC_FMT = "<IBBbH"
 IDX_SIZE = 12
 UOP_MAGIC = 0x50594D
 BLOCKS_PER_UOP_ENTRY = 4096
@@ -121,6 +126,9 @@ class Facet:
         self.map_path, self.idx_path, self.statics_path = map_path, idx_path, statics_path
         self._files = [open(p, "rb") for p in (map_path, idx_path, statics_path)]
         self.map, self.idx, self.sta = (mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) for f in self._files)
+        self.wide = self.sta[:len(WIDE_MAGIC)] == WIDE_MAGIC
+        self.static_size = WIDE_STATIC_SIZE if self.wide else STATIC_SIZE
+        self.static_fmt = WIDE_STATIC_FMT if self.wide else STATIC_FMT
         self.is_uop = map_path.suffix.lower() == ".uop"
         self._uop_offsets: list[int] = []
         if self.is_uop:
@@ -177,12 +185,15 @@ class Facet:
         for i in range(64):
             b.land_id[i], b.land_z[i] = struct.unpack_from("<Hb", self.map, at + i * 3)
         offset, length = self.statics_span(n)
-        for k in range(length // STATIC_SIZE):
-            sid, x, y, z, hue = struct.unpack_from("<HBBbH", self.sta, offset + k * STATIC_SIZE)
+        for sid, x, y, z, hue in self.statics_records(offset, length):
             if sid in (0, 0xFFFF):
                 continue
             b.statics.append((sid, x, y, z, hue))
         return b
+
+    def statics_records(self, offset: int, length: int):
+        """(id, x, y, z, hue) for each whole record in a statics span, stock or wide."""
+        return struct.iter_unpack(self.static_fmt, self.sta[offset:offset + length - length % self.static_size])
 
 
 def facet_files(data_dir: Path, facet: int) -> tuple[Path, Path, Path]:

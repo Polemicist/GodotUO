@@ -19,7 +19,6 @@ import collections
 import hashlib
 import json
 import statistics
-import struct
 import sys
 import time
 from dataclasses import dataclass, field
@@ -286,7 +285,7 @@ def facet_buildings(data_dir: Path, facet: int, tiles: Tiles, x_limit: int = DUN
                     max_span: int = 64, extra: list | None = None, log=print):
     """Yield (ref, bounds, statics, land) for each wall cluster on a facet. `extra`
     items (the shard's decoration) count as statics."""
-    from guo.uomap import STATIC_SIZE, open_facet
+    from guo.uomap import open_facet
     by_block = collections.defaultdict(list)
     for e in extra or ():
         if 0 <= e[1] < x_limit:
@@ -300,7 +299,7 @@ def facet_buildings(data_dir: Path, facet: int, tiles: Tiles, x_limit: int = DUN
                 off, length = f.statics_span(f.number(bx, by))
                 if not length:
                     continue
-                for sid, x, y, _z, _hue in struct.iter_unpack("<HBBbH", f.sta[off:off + length - length % STATIC_SIZE]):
+                for sid, x, y, _z, _hue in f.statics_records(off, length):
                     w = wall_ids.get(sid)
                     if w is None:
                         t = tiles.get(sid)

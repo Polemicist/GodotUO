@@ -4559,3 +4559,7 @@ On:
   more than four hex digits, and its overlay scratch file uses 9-byte records
   under the profile. A project block holding such an id refuses to load
   with the profile off.
+- The shared Python reader (`tools/guo/uomap.py`) reads either width from the
+  file's own header, so map mining and `tools/world` export and verify do too.
+  Export writes a block's statics in its facet's own width, and refuses a static
+  id above 0xFFFF on a facet whose statics file is stock.

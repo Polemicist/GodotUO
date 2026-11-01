@@ -83,7 +83,7 @@ from backends import modernuo, servuo  # noqa: E402
 import town_import  # noqa: E402
 
 BACKENDS = {modernuo.NAME: modernuo, servuo.NAME: servuo}
-from guo.uomap import IDX_SIZE, MAP_BLOCK, STATIC_SIZE, Block, facet_files, install_fingerprint, open_facet  # noqa: E402
+from guo.uomap import IDX_SIZE, MAP_BLOCK, Block, facet_files, install_fingerprint, open_facet  # noqa: E402
 
 
 # --- the project ----------------------------------------------------------
@@ -224,6 +224,10 @@ def cmd_export(cfg, project: Path, out: Path, force: bool, ul_shard: str = "GUO-
 
         # Offsets come from the install (identical layout to the copies).
         with open_facet(data, facet) as fac:
+            wide_ids = sorted({s[0] for b in bs.values() for s in b.statics if s[0] > 0xFFFF})
+            if wide_ids and not fac.wide:
+                print(f"[world] REFUSED: map{facet} statics are stock 7-byte records, so static 0x{wide_ids[0]:X} cannot be written (docs/data_formats.md section 53)")
+                return 1
             land, idx, statics = targets
             with land.open("r+b") as lf, idx.open("r+b") as xf, statics.open("r+b") as sf:
                 sf.seek(0, 2)
@@ -237,8 +241,8 @@ def cmd_export(cfg, project: Path, out: Path, force: bool, ul_shard: str = "GUO-
                     xf.seek(n * IDX_SIZE)
                     if b.statics:
                         at = sf.tell()
-                        sf.write(b"".join(struct.pack("<HBBbH", *s) for s in b.statics))
-                        xf.write(struct.pack("<iii", at, len(b.statics) * STATIC_SIZE, extra))
+                        sf.write(b"".join(struct.pack(fac.static_fmt, *s) for s in b.statics))
+                        xf.write(struct.pack("<iii", at, len(b.statics) * fac.static_size, extra))
                     else:
                         xf.write(struct.pack("<iii", -1, 0, extra))
 
