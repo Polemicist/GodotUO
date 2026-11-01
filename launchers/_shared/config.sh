@@ -40,6 +40,11 @@ unset _guo_shared_dir
 # UO_CLIENT_DATA has no default: set it in config.local.sh or the environment.
 : "${UO_CLIENT_VERSION:=7.0.107.76}"
 
+# Opt-in wide static art (docs/data_formats.md section 53): static art ids
+# above 0xFFFF for an install that carries them. Empty = off, a stock install.
+# The one profile is widestatics1.
+: "${GUO_WIDE_ART:=}"
+
 # --- Runtime cache -----------------------------------------------------------
 # Empty = $XDG_DATA_HOME/GUO/cache (~/.local/share/GUO/cache).
 : "${UO_CACHE_DIR:=}"
