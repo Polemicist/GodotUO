@@ -1,6 +1,7 @@
 #if TOOLS
 namespace GUO.Editor;
 
+using GUO.Assets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,30 +29,32 @@ internal sealed class WorldBrush
         {
             string[] pair = rule.Trim().Split('=');
             if (pair.Length != 2 || !int.TryParse(pair[0], out int mask) || mask < 0 || mask > 15
-                || !TryId(pair[1], out ushort tile) || tile >= EditorData.LandCount || !data.HasArt(tile))
+                || !TryId(pair[1], out uint tile) || tile >= EditorData.LandCount || !data.HasArt(tile))
                 return "Invalid terrain edge rule: use neighbor mask 0–15 = valid land ID";
         }
         return null;
     }
 
-    internal static List<(ushort Id, int Weight)> ParseVariants(string text)
+    internal static List<(uint Id, int Weight)> ParseVariants(string text)
     {
-        var result = new List<(ushort, int)>();
+        var result = new List<(uint, int)>();
         foreach (string part in text.Split(',', StringSplitOptions.RemoveEmptyEntries))
         {
             string[] pair = part.Trim().Split(':');
-            if (!TryId(pair[0], out ushort id) || (pair.Length > 1 && (!int.TryParse(pair[1], out int _) || int.Parse(pair[1]) <= 0))) continue;
+            if (!TryId(pair[0], out uint id) || (pair.Length > 1 && (!int.TryParse(pair[1], out int _) || int.Parse(pair[1]) <= 0))) continue;
             result.Add((id, pair.Length > 1 ? Math.Clamp(int.Parse(pair[1]), 1, 10000) : 1));
         }
         return result;
     }
 
-    internal static bool TryId(string text, out ushort id)
+    /// <summary>An art id typed as hex (0x...) or decimal; above 0xFFFF only under the wide art profile (data_formats section 53).</summary>
+    internal static bool TryId(string text, out uint id)
     {
         text = text.Trim();
-        return text.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
-            ? ushort.TryParse(text.AsSpan(2), System.Globalization.NumberStyles.HexNumber, null, out id)
-            : ushort.TryParse(text, out id);
+        bool parsed = text.StartsWith("0x", StringComparison.OrdinalIgnoreCase)
+            ? uint.TryParse(text.AsSpan(2), System.Globalization.NumberStyles.HexNumber, null, out id)
+            : uint.TryParse(text, out id);
+        return parsed && (id <= ushort.MaxValue || WideArtProfile.Enabled);
     }
 
     internal IEnumerable<(int X, int Y)> Footprint(int x, int y)
@@ -129,7 +132,7 @@ internal sealed class WorldBrush
         };
     }
 
-    internal ushort Choose(int x, int y, ushort fallback)
+    internal uint Choose(int x, int y, uint fallback)
     {
         var variants = ParseVariants(Variants);
         if (variants.Count == 0) return fallback;
@@ -138,7 +141,7 @@ internal sealed class WorldBrush
         return fallback;
     }
 
-    internal bool Apply(WorldEditor editor, WorldData data, int facet, IEnumerable<(int X, int Y)> cells, ushort fallback)
+    internal bool Apply(WorldEditor editor, WorldData data, int facet, IEnumerable<(int X, int Y)> cells, uint fallback)
     {
         var accepted = PlanCells(data, cells, fallback);
         var edits = new Dictionary<(int, int), Action<WorldBlock>>();
@@ -153,7 +156,7 @@ internal sealed class WorldBrush
                 foreach (var c in captured)
                 {
                     int i = (c.Y & 7) * 8 + (c.X & 7);
-                    ushort id = Choose(c.X, c.Y, fallback);
+                    uint id = Choose(c.X, c.Y, fallback);
                     if (Operation == "Paint" && Land)
                     {
                         // Match both this stroke and the existing terrain family at its boundary.
@@ -164,9 +167,9 @@ internal sealed class WorldBrush
                         foreach (string rule in Edges.Split(',', StringSplitOptions.RemoveEmptyEntries))
                         {
                             string[] pair = rule.Trim().Split('=');
-                            if (pair.Length == 2 && int.TryParse(pair[0], out int m) && m == mask && TryId(pair[1], out ushort edge)) id = edge;
+                            if (pair.Length == 2 && int.TryParse(pair[0], out int m) && m == mask && TryId(pair[1], out uint edge)) id = edge;
                         }
-                        b.LandId[i] = id;
+                        b.LandId[i] = (ushort)id; // land ids are below 0x4000
                     }
                     else if (Operation == "Paint")
                     {
@@ -198,25 +201,25 @@ internal sealed class WorldBrush
         return editor.EditBatch(facet, edits, $"{Operation}: {accepted.Count} cells");
     }
 
-    private HashSet<ushort> TerrainFamily(ushort fallback)
+    private HashSet<uint> TerrainFamily(uint fallback)
     {
         var family = ParseVariants(Variants).Select(v => v.Id).ToHashSet(); family.Add(fallback);
         foreach (string rule in Edges.Split(',', StringSplitOptions.RemoveEmptyEntries))
         {
             string[] pair = rule.Split('=');
-            if (pair.Length == 2 && TryId(pair[1], out ushort id)) family.Add(id);
+            if (pair.Length == 2 && TryId(pair[1], out uint id)) family.Add(id);
         }
         return family;
     }
 
-    private static bool InFamily(WorldData data, int x, int y, HashSet<ushort> family)
+    private static bool InFamily(WorldData data, int x, int y, HashSet<uint> family)
     {
         BlockData block = data.Block(x >> 3, y >> 3);
         return block != null && family.Contains(block.LandId[(y & 7) * 8 + (x & 7)]);
     }
 
     /// <summary>Includes adjacent matching terrain when an edge recipe must reconnect an older stroke.</summary>
-    internal HashSet<(int X, int Y)> PlanCells(WorldData data, IEnumerable<(int X, int Y)> cells, ushort fallback)
+    internal HashSet<(int X, int Y)> PlanCells(WorldData data, IEnumerable<(int X, int Y)> cells, uint fallback)
     {
         var result = cells.Distinct().Where(c => AcceptCell(data, c.X, c.Y)).ToHashSet();
         if (Operation != "Paint" || !Land || string.IsNullOrWhiteSpace(Edges)) return result;

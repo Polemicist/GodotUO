@@ -25,7 +25,7 @@ internal static class WorldAim
     /// it), projected with the game's own camera. Null when block
     /// <paramref name="bx"/>,<paramref name="by"/> holds no such static.
     /// </summary>
-    public static Vector2I? ScreenOf(WorldView world, EditorData data, int bx, int by, ushort id)
+    public static Vector2I? ScreenOf(WorldView world, EditorData data, int bx, int by, uint id)
     {
         var chunk = world.Host.World.Map.GetChunk2(bx, by, load: true);
         for (int x = 0; x < 8; x++)

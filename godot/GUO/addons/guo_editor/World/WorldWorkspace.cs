@@ -358,7 +358,7 @@ public partial class WorldView
             using Image img = _data?.ArtImage(art);
             row.AddChild(new TextureRect { Texture = img == null ? null : ImageTexture.CreateFromImage(img), CustomMinimumSize = new Vector2(32, 32),
                 ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered, TextureFilter = TextureFilterEnum.Nearest });
-            row.AddChild(new Label { Text = NameThenId(art, v.Id), ClipText = true, SizeFlagsHorizontal = SizeFlags.ExpandFill });
+            row.AddChild(new Label { Text = NameThenId(art, (int)v.Id), ClipText = true, SizeFlagsHorizontal = SizeFlags.ExpandFill });
             var weight = new SpinBox { Value = v.Weight, MinValue = 1, MaxValue = 10000, TooltipText = $"Relative weight ({v.Weight * 100 / total}% at these settings)" };
             row.AddChild(weight);
             weight.ValueChanged += value =>
@@ -480,7 +480,7 @@ public partial class WorldView
                 if (_recipe.Operation != "Paint" || _recipe.Land || _data?.IsLoaded != true || _guides.Ghosts.Count >= 128) continue;
                 uint art = _data.CurrentArt;
                 if (art < EditorData.LandCount) continue;
-                ushort id = _recipe.Choose(c.X, c.Y, (ushort)(art - EditorData.LandCount));
+                uint id = _recipe.Choose(c.X, c.Y, art - EditorData.LandCount);
                 Texture2D texture = GhostTexture(EditorData.LandCount + id);
                 if (texture != null) _guides.Ghosts.Add((c.X, c.Y, Math.Clamp((_recipe.FixedHeight ? 0 : _modeNode.Data.LandZ(c.X, c.Y)) + _recipe.Height, -128, 127), texture));
             }
@@ -581,7 +581,7 @@ public partial class WorldView
             if (_recipe.Operation == "Paint" && (_data?.IsLoaded != true || (_data.CurrentArt < EditorData.LandCount) != _recipe.Land))
             { _status.Text = "Choose art matching the target: terrain or statics"; return; }
             uint art = _data?.CurrentArt ?? 0;
-            ushort id = (ushort)(art < EditorData.LandCount ? art : art - EditorData.LandCount);
+            uint id = art < EditorData.LandCount ? art : art - EditorData.LandCount;
             bool changed = _recipe.Apply(_editor, _modeNode.Data, _host.Facet, _stroke, id);
             if (!changed) _status.Text = _recipe.WhyNothing(_modeNode.Data, _stroke);
             _stackIndex = -1; _stackCell = null;

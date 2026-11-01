@@ -4563,3 +4563,9 @@ On:
   file's own header, so map mining and `tools/world` export and verify do too.
   Export writes a block's statics in its facet's own width, and refuses a static
   id above 0xFFFF on a facet whose statics file is stock.
+- World tab tools take uint static ids under the profile: brush variants and
+  edge rules, stamp, erase, hue, pick and the AI stamp tool. The UO Shard dock
+  does not send a block holding a static above 0xFFFF, because the editor
+  bridge's shard stores 16-bit ids. A world selection made into a multi skips
+  such statics, since multi components are 16-bit. Asset edits (art, tiledata,
+  cliloc tile sync) and multis stay at 0x0000-0xFFFF.

@@ -275,6 +275,14 @@ public partial class ShardDock : EditorDock
             return;
         }
 
+        // The bridge's shard keeps 16-bit static ids (data_formats section 53): a block holding a wider
+        // one stays local rather than reaching the shard truncated.
+        if (b.Statics.Exists(s => s.Id > ushort.MaxValue))
+        {
+            Log($"not sent: block map{b.Facet} {b.Bx},{b.By} holds static art above 0xFFFF, which the shard bridge cannot store");
+            return;
+        }
+
         _lastSentMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         _link.SendBlock(b);
         Log($"sent block map{b.Facet} {b.Bx},{b.By} ({b.Statics.Count} statics)");

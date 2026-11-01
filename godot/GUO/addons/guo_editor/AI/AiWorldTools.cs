@@ -1,6 +1,7 @@
 #if TOOLS
 namespace GUO.Editor;
 
+using GUO.Assets;
 using System;
 using System.IO;
 using System.Linq;
@@ -145,8 +146,8 @@ internal static class AiWorldTools
     {
         var (view, facet, x, y) = Cell(ctx, args);
         int graphic = Integer(args, "graphic"), hue = Integer(args, "hue");
-        if (graphic < 0 || graphic > ushort.MaxValue || graphic >= ctx.Data.Files.TileData.StaticData.Length)
-            throw new ArgumentException("graphic must be a loaded static tiledata id in 0..65535");
+        if (graphic < 0 || (graphic > ushort.MaxValue && !WideArtProfile.Enabled) || graphic >= ctx.Data.Files.TileData.StaticData.Length)
+            throw new ArgumentException(WideArtProfile.Enabled ? "graphic must be a loaded static tiledata id" : "graphic must be a loaded static tiledata id in 0..65535");
         if (hue < 0 || hue > ushort.MaxValue) throw new ArgumentException("hue must be 0..65535");
         if (view.Host.Project == null) throw new InvalidOperationException("open a world project before stamping");
         string relative = Path.GetRelativePath(Path.GetFullPath(ctx.Data.ClientData), view.Host.Project.Root);
@@ -154,7 +155,7 @@ internal static class AiWorldTools
             !relative.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal))
             throw new InvalidOperationException("refusing to stamp a project inside the client installation");
         sbyte z = view.Modes.Data.LandZ(x, y);
-        bool changed = view.Editor.Stamp(facet, x, y, z, (ushort)graphic, (ushort)hue);
+        bool changed = view.Editor.Stamp(facet, x, y, z, (uint)graphic, (ushort)hue);
         return new JsonObject
         {
             ["applied"] = changed, ["facet"] = facet, ["x"] = x, ["y"] = y,

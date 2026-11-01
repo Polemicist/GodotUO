@@ -232,7 +232,7 @@ internal sealed class ShardLink : IDisposable
         {
             b.Statics.Add(new WorldStatic
             {
-                Id = (ushort)(int)s[0], X = (byte)(int)s[1], Y = (byte)(int)s[2], Z = (sbyte)(int)s[3], Hue = (ushort)(int)s[4],
+                Id = (uint)s[0], X = (byte)(int)s[1], Y = (byte)(int)s[2], Z = (sbyte)(int)s[3], Hue = (ushort)(int)s[4],
             });
         }
 

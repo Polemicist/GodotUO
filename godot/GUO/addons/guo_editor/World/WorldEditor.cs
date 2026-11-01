@@ -215,7 +215,7 @@ internal sealed class WorldEditor
 
     // --- tools ----------------------------------------------------------
 
-    public bool Stamp(int facet, int x, int y, sbyte z, ushort id, ushort hue) =>
+    public bool Stamp(int facet, int x, int y, sbyte z, uint id, ushort hue) =>
         Edit(facet, x >> 3, y >> 3, b => b.Statics.Add(new WorldStatic
         {
             Id = id,
