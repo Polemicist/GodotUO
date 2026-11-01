@@ -1149,6 +1149,7 @@ namespace GUO.Game
                 data.OriginalStaticCount = staticCount;
                 data.MapFile = file;
                 data.StaticFile = staticfile;
+                data.Wide = data.OriginalWide = false; // PORT DEVIATION (GUO): UltimaLive statics are stock records
             }
 
             public class AsyncWriterTasked

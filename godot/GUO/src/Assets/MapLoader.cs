@@ -332,6 +332,21 @@ namespace GUO.Assets
                 staticfile = _currentStaticsFiles[0];
             }
 
+            // PORT DEVIATION (GUO): wide statics files (data_formats section 53) hold 9-byte records.
+            // Read without the profile they would decode as garbage, so their statics are refused instead.
+            bool wide = IsWideStatics(staticfile);
+            bool refuseStatics = wide && !WideArtProfile.Enabled;
+
+            if (wide)
+            {
+                staticblocksize = WideArtProfile.StaticRecordSize;
+
+                if (refuseStatics)
+                {
+                    Log.Warn($"map {i}: its statics file is wide; set GUO_WIDE_ART={WideArtProfile.WideStatics1} to read it. Statics are not loaded.");
+                }
+            }
+
             ulong uopoffset = 0;
             int fileNumber = -1;
             bool isuop = file is UOFileUop;
@@ -365,7 +380,7 @@ namespace GUO.Assets
 
                 var st = fileidx.Read<StaidxBlock>();
 
-                if (st.Size > 0 && st.Position != 0xFFFF_FFFF)
+                if (st.Size > 0 && st.Position != 0xFFFF_FFFF && !refuseStatics)
                 {
                     staticPos = st.Position;
                     staticCount = Math.Min(1024, (uint)(st.Size / staticblocksize));
@@ -381,6 +396,7 @@ namespace GUO.Assets
 
                 data.MapFile = file;
                 data.StaticFile = staticfile;
+                data.Wide = data.OriginalWide = wide; // PORT DEVIATION (GUO): data_formats section 53
             }
 
             if (isuop)
@@ -434,6 +450,7 @@ namespace GUO.Assets
             }
 
             BlockData[0][block].StaticCount = BlockData[0][block].OriginalStaticCount = count;
+            BlockData[0][block].Wide = BlockData[0][block].OriginalWide = false; // PORT DEVIATION (GUO): verdata statics are stock records
         }
 
         public unsafe bool ApplyPatches(ref StackDataReader reader)
@@ -567,6 +584,7 @@ namespace GUO.Assets
                             BlockData[idx][blockIndex].StaticFile = _staDif[i];
                             BlockData[idx][blockIndex].StaticAddress = realStaticAddress;
                             BlockData[idx][blockIndex].StaticCount = realStaticCount;
+                            BlockData[idx][blockIndex].Wide = false; // PORT DEVIATION (GUO): stadif statics are stock records
 
                             result = true;
                         }
@@ -610,6 +628,7 @@ namespace GUO.Assets
                                 index.MapAddress = index.OriginalMapAddress;
                                 index.StaticAddress = index.OriginalStaticAddress;
                                 index.StaticCount = index.OriginalStaticCount;
+                                index.Wide = index.OriginalWide; // PORT DEVIATION (GUO): data_formats section 53
                             }
                         }
                     }
@@ -618,6 +637,20 @@ namespace GUO.Assets
                 // before a fresh set of shard diffs is applied.
                 FileManager.Content?.ApplyMap(this, i);
             }
+        }
+
+        // PORT DEVIATION (GUO): data_formats section 53.
+        private static bool IsWideStatics(FileReader file)
+        {
+            if (file == null || file.Length < WideArtProfile.StaticsMagic.Length)
+            {
+                return false;
+            }
+
+            Span<byte> head = stackalloc byte[WideArtProfile.StaticsMagic.Length];
+            file.Seek(0, SeekOrigin.Begin);
+            file.Read(head);
+            return WideArtProfile.IsWideStatics(head);
         }
 
         public void SanitizeMapIndex(ref int map)
@@ -710,8 +743,69 @@ namespace GUO.Assets
         public ulong StaticAddress;
         public uint StaticCount;
 
+        // PORT DEVIATION (GUO): data_formats section 53. Wide blocks hold 9-byte records.
+        public bool Wide;
+        public bool OriginalWide;
+
         public static IndexMap Invalid = new IndexMap() { MapAddress = ulong.MaxValue };
 
         public readonly bool IsValid() => MapAddress != ulong.MaxValue;
+
+        public readonly int StaticRecordSize => Wide ? WideArtProfile.StaticRecordSize : WideArtProfile.LegacyStaticRecordSize;
+
+        /// <summary>
+        /// PORT DEVIATION (GUO): reads this block's statics, stock or wide, into <paramref name="dst"/>
+        /// and returns how many were read (at most StaticCount and dst.Length). A thread with its own
+        /// handle on the statics file passes it as <paramref name="file"/>.
+        /// </summary>
+        public readonly int ReadStatics(Span<StaticRecord> dst, FileReader file = null)
+        {
+            file ??= StaticFile;
+            int count = (int)Math.Min((uint)dst.Length, StaticCount);
+
+            if (count <= 0 || file == null || StaticAddress == 0)
+            {
+                return 0;
+            }
+
+            int size = StaticRecordSize;
+            int bytes = count * size;
+            byte[] buffer = System.Buffers.ArrayPool<byte>.Shared.Rent(bytes);
+
+            try
+            {
+                file.Seek((long)StaticAddress, SeekOrigin.Begin);
+                int read = file.Read(buffer.AsSpan(0, bytes));
+                count = read / size;
+
+                for (int i = 0; i < count; i++)
+                {
+                    dst[i] = StaticRecord.Decode(buffer.AsSpan(i * size, size), Wide);
+                }
+
+                return count;
+            }
+            finally
+            {
+                System.Buffers.ArrayPool<byte>.Shared.Return(buffer);
+            }
+        }
+    }
+
+    /// <summary>
+    /// PORT DEVIATION (GUO): one statics record whatever the file's width (data_formats section 53).
+    /// Stock: ushort art, X, Y, sbyte Z, ushort hue. Wide: uint art, X, Y, sbyte Z, ushort hue.
+    /// </summary>
+    public struct StaticRecord
+    {
+        public uint Color;
+        public byte X;
+        public byte Y;
+        public sbyte Z;
+        public ushort Hue;
+
+        public static StaticRecord Decode(ReadOnlySpan<byte> r, bool wide) => wide
+            ? new StaticRecord { Color = System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(r), X = r[4], Y = r[5], Z = (sbyte)r[6], Hue = System.Buffers.Binary.BinaryPrimitives.ReadUInt16LittleEndian(r[7..]) }
+            : new StaticRecord { Color = System.Buffers.Binary.BinaryPrimitives.ReadUInt16LittleEndian(r), X = r[2], Y = r[3], Z = (sbyte)r[4], Hue = System.Buffers.Binary.BinaryPrimitives.ReadUInt16LittleEndian(r[5..]) };
     }
 }

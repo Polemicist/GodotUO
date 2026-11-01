@@ -1177,7 +1177,7 @@ namespace GUO.Game.UI.Gumps
 
                         var size = (realWidth + OFFSET_PIX) * (realHeight + OFFSET_PIX);
                         var allZ = new sbyte[size];
-                        var staticBlocks = new StaticsBlock[32];
+                        var staticBlocks = new StaticRecord[32]; // PORT DEVIATION (GUO): stock or wide records, data_formats section 53
 
                         // PORT DEVIATION (GUO): upstream builds the cached
                         // map in an ImageSharp Image<Byte4>, asks it for its
@@ -1243,23 +1243,20 @@ namespace GUO.Game.UI.Gumps
                                     fileStatics = new UOFile(indexMap.StaticFile.FilePath);
                                 }
 
-                                fileStatics.Seek((long)indexMap.StaticAddress, System.IO.SeekOrigin.Begin);
-
                                 if (staticBlocks.Length < indexMap.StaticCount)
-                                    staticBlocks = new StaticsBlock[indexMap.StaticCount];
+                                    staticBlocks = new StaticRecord[indexMap.StaticCount];
 
-                                var staticsBlocksSpan = staticBlocks.AsSpan(0, (int)indexMap.StaticCount);
-                                fileStatics.Read(MemoryMarshal.AsBytes(staticsBlocksSpan));
+                                var staticsBlocksSpan = staticBlocks.AsSpan(0, indexMap.ReadStatics(staticBlocks.AsSpan(0, (int)indexMap.StaticCount), fileStatics));
 
                                 foreach (ref var sb in staticsBlocksSpan)
                                 {
-                                    if (sb.Color != 0 && sb.Color != 0xFFFF && GameObject.CanBeDrawn(World, sb.Color))
+                                    if (sb.Color != 0 && sb.Color != 0xFFFF && sb.X < 8 && sb.Y < 8 && GameObject.CanBeDrawn(World, sb.Color))
                                     {
                                         int block = (mapY + sb.Y + OFFSET_PIX_HALF) * (realWidth + OFFSET_PIX) + mapX + sb.X + OFFSET_PIX_HALF;
 
                                         if (sb.Z >= allZ[block])
                                         {
-                                            var color = (ushort)(0x8000 | (sb.Hue != 0 ? huesLoader.GetColor16(16384, sb.Hue) : huesLoader.GetRadarColorData(sb.Color + 0x4000)));
+                                            var color = (ushort)(0x8000 | (sb.Hue != 0 ? huesLoader.GetColor16(16384, sb.Hue) : huesLoader.GetRadarColorData((int)sb.Color + 0x4000)));
 
                                             imgSpan[block] = HuesHelper.Color16To32(color) | 0xFF_00_00_00;
                                             allZ[block] = sb.Z;

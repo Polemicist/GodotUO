@@ -4547,3 +4547,15 @@ On:
   repaint and splat skins exist only for ids up to 0xFFFF; a wider id has none.
   Targeting a wide static sends the low 16 bits, because the target packet
   carries a 16-bit graphic.
+- A statics file that begins with the 8 ASCII bytes `SOSWIDE1` holds 9-byte
+  records: uint32 art, byte X, byte Y, sbyte Z, uint16 hue, the Static9
+  layout of ADR-0047. `staidx` positions stay absolute file offsets, so the
+  first block starts at offset 8 or later. With the profile off, such a file's
+  statics are refused with a warning instead of being misread as 7-byte records.
+  Verdata, stadif, UltimaLive and Store blocks stay stock records. Every
+  reader decodes through `IndexMap.ReadStatics`; a wide record whose art is
+  past tiledata, or whose X or Y is past 7, is dropped.
+- The editor's world project (section 9) stores a static id above 0xFFFF as
+  more than four hex digits, and its overlay scratch file uses 9-byte records
+  under the profile. A project block holding such an id refuses to load
+  with the profile off.

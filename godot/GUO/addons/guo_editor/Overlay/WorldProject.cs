@@ -31,7 +31,8 @@ public sealed class WorldBlock
 
 public struct WorldStatic
 {
-    public ushort Id;
+    /// <summary>Static art id; above 0xFFFF only under the wide art profile (data_formats section 53).</summary>
+    public uint Id;
     public byte X, Y;
     public sbyte Z;
     public ushort Hue;
@@ -211,7 +212,7 @@ public sealed class WorldProject : IDisposable
         {
             b.Statics.Add(new WorldStatic
             {
-                Id = Hex((string)s["id"]),
+                Id = HexId((string)s["id"]),
                 X = (byte)(int)s["x"],
                 Y = (byte)(int)s["y"],
                 Z = (sbyte)(int)s["z"],
@@ -224,6 +225,17 @@ public sealed class WorldProject : IDisposable
 
     private static ushort Hex(string s) =>
         ushort.Parse(s.StartsWith("0x", StringComparison.OrdinalIgnoreCase) ? s[2..] : s, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+
+    private static uint HexId(string s)
+    {
+        uint id = uint.Parse(s.StartsWith("0x", StringComparison.OrdinalIgnoreCase) ? s[2..] : s, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+        if (id > ushort.MaxValue && !WideArtProfile.Enabled)
+        {
+            throw new FormatException($"static 0x{id:X} needs GUO_WIDE_ART={WideArtProfile.WideStatics1}");
+        }
+
+        return id;
+    }
 
     /// <summary>Saves a block. Statics are written sorted by cell, then z, so a diff shows only what changed.</summary>
     public string WriteBlock(WorldBlock b)
@@ -301,10 +313,11 @@ public sealed class WorldProject : IDisposable
 
         if (im.StaticFile != null && im.StaticCount > 0)
         {
-            im.StaticFile.Seek((long)im.StaticAddress, SeekOrigin.Begin);
-            for (uint c = 0; c < im.StaticCount; c++)
+            var records = new StaticRecord[im.StaticCount];
+            int read = im.ReadStatics(records);
+            for (int c = 0; c < read; c++)
             {
-                StaticsBlock st = im.StaticFile.Read<StaticsBlock>();
+                StaticRecord st = records[c];
                 if (st.Color == 0 || st.Color == 0xFFFF)
                 {
                     continue;
@@ -340,6 +353,7 @@ public sealed class WorldProject : IDisposable
         Directory.CreateDirectory(cache);
         string path = Path.Combine(cache, $"overlay_map{facet}_{++_generation}.bin");
         var offsets = new Dictionary<int, (long map, long statics, int count)>();
+        bool wide = WideArtProfile.Enabled;
         using (var w = new BinaryWriter(File.Create(path)))
         {
             foreach (WorldBlock b in blocks)
@@ -356,7 +370,16 @@ public sealed class WorldProject : IDisposable
                 long staticsAt = w.BaseStream.Position;
                 foreach (WorldStatic s in b.Statics)
                 {
-                    w.Write(s.Id);
+                    // Wide profile: 9-byte records, flagged on each repointed entry below (data_formats section 53).
+                    if (wide)
+                    {
+                        w.Write(s.Id);
+                    }
+                    else
+                    {
+                        w.Write((ushort)s.Id);
+                    }
+
                     w.Write(s.X);
                     w.Write(s.Y);
                     w.Write(s.Z);
@@ -399,6 +422,7 @@ public sealed class WorldProject : IDisposable
             im.StaticFile = reader;
             im.StaticAddress = (ulong)at.statics;
             im.StaticCount = (uint)at.count;
+            im.Wide = wide;
             changed.Add(number);
         }
 

@@ -21,7 +21,7 @@ namespace GUO.Game.UI.Gumps
     {
         struct ColorInfo
         {
-            public ushort Color;
+            public uint Color; // PORT DEVIATION (GUO): uint art ids, data_formats section 53
             public sbyte Z;
             public bool IsLand;
         }
@@ -309,7 +309,6 @@ namespace GUO.Game.UI.Gumps
                     }
 
                     staticsZ.Fill(d);
-                    indexMap.StaticFile.Seek((long)indexMap.StaticAddress, System.IO.SeekOrigin.Begin);
                     indexMap.MapFile.Seek((long)indexMap.MapAddress, System.IO.SeekOrigin.Begin);
                     var cells = indexMap.MapFile.Read<MapBlock>().Cells;
 
@@ -318,20 +317,26 @@ namespace GUO.Game.UI.Gumps
                     int realBlockY = j << 3;
 
 
-                    for (int c = 0; c < indexMap.StaticCount; ++c)
+                    // PORT DEVIATION (GUO): stock or wide records (data_formats section 53).
+                    StaticRecord[] records = System.Buffers.ArrayPool<StaticRecord>.Shared.Rent((int)Math.Max(1u, indexMap.StaticCount));
+                    int recordCount = indexMap.ReadStatics(records);
+
+                    for (int c = 0; c < recordCount; ++c)
                     {
-                        var stblock = indexMap.StaticFile.Read<StaticsBlock>();
-                        if (stblock.Color > 0 && stblock.Color != 0xFFFF && GameObject.CanBeDrawn(World, stblock.Color))
+                        var stblock = records[c];
+                        if (stblock.Color > 0 && stblock.Color != 0xFFFF && stblock.X < 8 && stblock.Y < 8 && GameObject.CanBeDrawn(World, stblock.Color))
                         {
                             ref var st = ref staticsZ[stblock.Y * 8 + stblock.X];
                             if (st.Z < stblock.Z)
                             {
-                                st.Color = stblock.Hue > 0 ? (ushort)(stblock.Hue + 0x4000) : stblock.Color;
+                                st.Color = stblock.Hue > 0 ? (uint)(stblock.Hue + 0x4000) : stblock.Color;
                                 st.Z = stblock.Z;
                                 st.IsLand = stblock.Hue > 0;
                             }
                         }
                     }
+
+                    System.Buffers.ArrayPool<StaticRecord>.Shared.Return(records);
 
                     for (int x = 0; x < 8; x++)
                     {
@@ -348,7 +353,7 @@ namespace GUO.Game.UI.Gumps
                             if (stZ.Z >= z)
                             {
                                 z = stZ.Z;
-                                color = stZ.Color;
+                                color = (int)stZ.Color;
                                 isLand = stZ.IsLand;
                             }
 

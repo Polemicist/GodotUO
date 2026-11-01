@@ -50,7 +50,7 @@ public partial class WorldView
     private readonly List<uint> _favorites = new();
     private HFlowContainer _favoriteButtons;
     private VBoxContainer _variantRows;
-    private readonly List<(int X, int Y, sbyte Z, ushort Id, bool Land)> _stackEntries = new();
+    private readonly List<(int X, int Y, sbyte Z, uint Id, bool Land)> _stackEntries = new();
     private (int X, int Y)? _stackCell;
     private int _stackIndex = -1;
     private double _workspaceClock;
@@ -614,7 +614,7 @@ public partial class WorldView
         {
             if (s.Z < _host.MinVisibleZ || s.Z > _host.MaxVisibleZ) continue;
             _stackEntries.Add((x, y, s.Z, s.Id, false));
-            _stack.AddItem($"{NameThenId(EditorData.LandCount + s.Id, s.Id)}\nZ {s.Z} · hue {s.Hue}", GhostTexture(EditorData.LandCount + s.Id));
+            _stack.AddItem($"{NameThenId(EditorData.LandCount + s.Id, (int)s.Id)}\nZ {s.Z} · hue {s.Hue}", GhostTexture(EditorData.LandCount + s.Id));
         }
         BlockData b = _modeNode?.Data?.Block(x >> 3, y >> 3);
         if (b != null)
@@ -649,7 +649,7 @@ public partial class WorldView
         { _status.Text = "Set Z / hue: first click an item's row in Nearby tiles"; return; }
         var s = _stackEntries[_stackIndex];
         if (s.Land) { _status.Text = "Set Z / hue changes items, not the ground; use the Flatten brush to set ground height"; return; }
-        string name = NameThenId(EditorData.LandCount + s.Id, s.Id);
+        string name = NameThenId(EditorData.LandCount + s.Id, (int)s.Id);
         _editor.Edit(_host.Facet, s.X >> 3, s.Y >> 3, b =>
         {
             int i = b.Statics.FindIndex(t => t.X == (s.X & 7) && t.Y == (s.Y & 7) && t.Id == s.Id && t.Z == s.Z);
@@ -665,8 +665,8 @@ public partial class WorldView
         if (_stackIndex < 0 || _stackIndex >= _stackEntries.Count) return;
         var s = _stackEntries[_stackIndex];
         _status.Text = s.Land
-            ? $"Chosen: the ground ({NameThenId(s.Id, s.Id)}) at Z {s.Z}. Set Z / hue changes items only; use the Flatten brush for ground"
-            : $"Chosen: {NameThenId(EditorData.LandCount + s.Id, s.Id)} at Z {s.Z}. Type Z / ground offset and Hue, then press Set Z / hue";
+            ? $"Chosen: the ground ({NameThenId(s.Id, (int)s.Id)}) at Z {s.Z}. Set Z / hue changes items only; use the Flatten brush for ground"
+            : $"Chosen: {NameThenId(EditorData.LandCount + s.Id, (int)s.Id)} at Z {s.Z}. Type Z / ground offset and Hue, then press Set Z / hue";
     }
 
     /// <summary>ED6: an item or ground tile as its name first and its number second ("tree · 0x0CCA").</summary>

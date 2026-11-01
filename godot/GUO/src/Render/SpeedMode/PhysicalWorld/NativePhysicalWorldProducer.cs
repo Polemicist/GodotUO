@@ -147,7 +147,7 @@ internal static class NativePhysicalWorldProducer
                     _builder.MarkComplete(x, y);
                 }
                 if (index.StaticAddress == 0 || index.StaticCount == 0) continue;
-                long bytes = (long)index.StaticCount * 7;
+                long bytes = (long)index.StaticCount * index.StaticRecordSize; // PORT DEVIATION (GUO): data_formats section 53
                 if (index.StaticFile == null ||
                     index.StaticAddress > (ulong)Math.Max(0, index.StaticFile.Length - bytes))
                 {
@@ -156,9 +156,8 @@ internal static class NativePhysicalWorldProducer
                 }
                 int count = (int)Math.Min(index.StaticCount, (uint)(MaxSourceRecords - _visitedRecords));
                 if (count == 0) { _recordLimit = true; return; }
-                var records = new StaticsBlock[count];
-                index.StaticFile.Seek((long)index.StaticAddress, SeekOrigin.Begin);
-                if (index.StaticFile.Read(MemoryMarshal.AsBytes(records.AsSpan())) != (long)count * 7)
+                var records = new StaticRecord[count];
+                if (index.ReadStatics(records) != count)
                 {
                     MarkBlock(bx, by, PhysicalUnknownReason.InvalidSource);
                     continue;
@@ -168,6 +167,7 @@ internal static class NativePhysicalWorldProducer
                     _visitedRecords++;
                     var record = records[ordinal];
                     if (record.Color == 0 || record.Color == ushort.MaxValue) continue;
+                    if (record.Color >= Client.Game.UO.FileManager.TileData.StaticData.Length) { MarkBlock(bx, by, PhysicalUnknownReason.InvalidSource); continue; }
                     if (record.X > 7 || record.Y > 7) { MarkBlock(bx, by, PhysicalUnknownReason.InvalidSource); continue; }
                     ulong blockIdentity = (ulong)(uint)(bx * height + by);
                     Add(new Source(bx * 8 + record.X, by * 8 + record.Y, record.Z, record.Color,

@@ -226,13 +226,19 @@ namespace GUO.Game.Map
 
             if (im.StaticAddress != 0 && im.StaticCount > 0)
             {
-                var staticsBlockBuffer = ArrayPool<StaticsBlock>.Shared.Rent((int)im.StaticCount);
-                var staticsSpan = staticsBlockBuffer.AsSpan(0, (int)im.StaticCount);
-                im.StaticFile.Seek((long)im.StaticAddress, System.IO.SeekOrigin.Begin);
-                im.StaticFile.Read(MemoryMarshal.AsBytes(staticsSpan));
+                // PORT DEVIATION (GUO): stock or wide records through one decoder (data_formats section 53).
+                // A wide record past tiledata, or off its block, is refused rather than drawn from garbage.
+                var staticsBlockBuffer = ArrayPool<StaticRecord>.Shared.Rent((int)im.StaticCount);
+                var staticsSpan = staticsBlockBuffer.AsSpan(0, im.ReadStatics(staticsBlockBuffer.AsSpan(0, (int)im.StaticCount)));
+                int staticTiles = Client.Game.UO.FileManager.TileData.StaticData.Length;
 
                 foreach (ref var sb in staticsSpan)
                 {
+                    if (im.Wide && (sb.Color >= staticTiles || sb.X > 7 || sb.Y > 7))
+                    {
+                        continue;
+                    }
+
                     if (sb.Color != 0 && sb.Color != 0xFFFF)
                     {
                         int pos = (sb.Y << 3) + sb.X;
@@ -252,7 +258,7 @@ namespace GUO.Game.Map
                     }
                 }
 
-                ArrayPool<StaticsBlock>.Shared.Return(staticsBlockBuffer);
+                ArrayPool<StaticRecord>.Shared.Return(staticsBlockBuffer);
             }
         }
 

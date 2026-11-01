@@ -1117,8 +1117,9 @@ public partial class WorldView : VBoxContainer
         int baseZ = _host.World.Map.GetTileZ(cx, cy);
         name = $"world_{_host.Facet}_{a.X0}_{a.Y0}";
         return _editor.StaticsInRect(_host.Facet, a.X0, a.Y0, a.X1, a.Y1)
+            .Where(t => t.S.Id <= ushort.MaxValue) // multi components are 16-bit art
             .OrderBy(t => t.X).ThenBy(t => t.Y).ThenBy(t => t.S.Z)
-            .Select(t => new MultiPart { Id = t.S.Id, X = (short)(t.X - cx), Y = (short)(t.Y - cy), Z = (short)(t.S.Z - baseZ), Shown = true, Hue = t.S.Hue })
+            .Select(t => new MultiPart { Id = (ushort)t.S.Id, X = (short)(t.X - cx), Y = (short)(t.Y - cy), Z = (short)(t.S.Z - baseZ), Shown = true, Hue = t.S.Hue })
             .ToList();
     }
 

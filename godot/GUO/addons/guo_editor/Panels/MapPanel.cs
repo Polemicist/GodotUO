@@ -311,10 +311,11 @@ public partial class MapPanel : AssetPanel
 
         if (im.StaticFile != null && im.StaticCount > 0)
         {
-            im.StaticFile.Seek((long)im.StaticAddress, SeekOrigin.Begin);
-            for (uint c = 0; c < im.StaticCount; c++)
+            var records = new StaticRecord[im.StaticCount];
+            int read = im.ReadStatics(records);
+            for (int c = 0; c < read; c++)
             {
-                StaticsBlock st = im.StaticFile.Read<StaticsBlock>();
+                StaticRecord st = records[c];
                 if (st.Color == 0 || st.Color == 0xFFFF || st.X > 7 || st.Y > 7)
                 {
                     continue;
@@ -324,7 +325,7 @@ public partial class MapPanel : AssetPanel
                 if (st.Z >= topZ[i])
                 {
                     topZ[i] = st.Z;
-                    colours[i] = hues.GetRadarColorData(st.Color + 0x4000);
+                    colours[i] = hues.GetRadarColorData((int)st.Color + 0x4000);
                 }
 
                 detail?[i].Add(

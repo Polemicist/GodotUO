@@ -18,7 +18,7 @@ internal sealed partial class WorldOverview : IDisposable, IOverviewBlocks
 {
     private readonly OverviewMapCache _cache = new();
     private readonly List<Vector3I> _keys = new();
-    private readonly StaticsBlock[] _statics = new StaticsBlock[256];
+    private readonly StaticRecord[] _statics = new StaticRecord[1024];
     private readonly int[] _heights = new int[64];
     private World _world;
     private MapLoader _maps;
@@ -218,19 +218,15 @@ internal sealed partial class WorldOverview : IDisposable, IOverviewBlocks
             _heights[cell] = land.Z;
         }
         if (index.StaticAddress == 0 || index.StaticCount == 0 || index.StaticFile == null) return;
-        index.StaticFile.Seek((long)index.StaticAddress, System.IO.SeekOrigin.Begin);
-        uint remaining = index.StaticCount;
         var data = Client.Game.UO.FileManager.TileData.StaticData;
-        while (remaining != 0)
         {
-            int count = (int)Math.Min((uint)_statics.Length, remaining);
-            var span = _statics.AsSpan(0, count);
-            index.StaticFile.Read(MemoryMarshal.AsBytes(span));
+            // Stock or wide records (data_formats section 53); a block holds at most 1024.
+            var span = _statics.AsSpan(0, index.ReadStatics(_statics));
             foreach (ref var item in span)
             {
                 if (item.X >= 8 || item.Y >= 8 || item.Color == 0 || item.Color >= data.Length) continue;
-                ushort graphic = ThemeManager.StaticVariant(_world, x * 8 + item.X, y * 8 + item.Y, item.Color)
-                    ?? SeasonManager.GetSeasonGraphic(_world.Season, item.Color);
+                uint graphic = ThemeManager.StaticVariant(_world, x * 8 + item.X, y * 8 + item.Y, item.Color)
+                    ?? (item.Color <= ushort.MaxValue ? SeasonManager.GetSeasonGraphic(_world.Season, (ushort)item.Color) : item.Color);
                 if (graphic >= data.Length) continue;
                 ref var tile = ref data[graphic];
                 // Footprints of structure survive; small decorative props do not.
@@ -239,10 +235,10 @@ internal sealed partial class WorldOverview : IDisposable, IOverviewBlocks
                 int top = item.Z + tile.Height;
                 if (top < _heights[cell]) continue;
                 _heights[cell] = top;
-                ushort color = item.Hue != 0 ? hues.GetColor16(16384, item.Hue) : hues.GetRadarColorData(graphic + 0x4000);
+                ushort color = item.Hue != 0 ? hues.GetColor16(16384, item.Hue) : hues.GetRadarColorData((int)graphic + 0x4000);
                 colors[cell] = HuesHelper.Color16To32(color) | 0xff000000;
             }
-            remaining -= (uint)count;
+
         }
     }
     internal static bool KeepStatic(bool wall, bool roof, bool surface, int height) => wall || roof || surface || height >= 16;
