@@ -57,6 +57,11 @@ REM  Client version the data above corresponds to. Drives which file formats
 REM  and packet layouts the readers expect. See docs\data_formats.md.
 if not defined UO_CLIENT_VERSION    set "UO_CLIENT_VERSION=7.0.107.76"
 
+REM  Opt-in wide static art (docs\data_formats.md section 53): static art ids
+REM  above 0xFFFF for an install that carries them. Empty = off, a stock install.
+REM  The one profile is widestatics1.
+if not defined GUO_WIDE_ART         set "GUO_WIDE_ART="
+
 REM --- Generated output ---------------------------------------------------
 REM  Where launchers and tools write generated files: screenshots, smoke
 REM  runs, exports, staged data sets. The default is this checkout's build\

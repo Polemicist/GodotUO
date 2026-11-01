@@ -4524,3 +4524,19 @@ across physical discontinuities instead of mixing different floors.
 See `tools/scenarios/client/lighting_physical_world.md` for disconnected Britain
 proofs. Pure tests are distinct from GPU/native acceptance. These contracts do not
 claim full-world coverage, all roof shapes, full GI, or complete point-light rollout.
+
+## 53. Wide static art (`GUO_WIDE_ART`, `src/Assets/WideArtProfile.cs`)
+
+Opt-in support for static art ids above 0xFFFF, for an install whose art index
+and tiledata carry more than 0x10000 static slots. It follows the art-only
+widening of ADR-0047 (Static9 records, signed-byte Z unchanged) on that
+install's own files rather than ADR-0047's lab container.
+
+Off unless `GUO_WIDE_ART=widestatics1`. Off, every path reads a stock install
+exactly as before: 0x10000 static slots, 7-byte statics records.
+
+On:
+
+- Static capacity is the art index's static slot count (`artidx.mul` entries
+  minus 0x4000 land), rounded down to a multiple of 32 and clamped to
+  0x10000..0x40000. The editor's art grid and asset fields list that many.

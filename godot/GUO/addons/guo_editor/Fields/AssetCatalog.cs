@@ -164,7 +164,7 @@ public sealed class AssetCatalog
             case AssetPickKind.Static:
             case AssetPickKind.Land:
                 bool land = kind == AssetPickKind.Land;
-                int count = land ? (int)EditorData.LandCount : Math.Min(files.Arts.File.Entries.Length - (int)EditorData.LandCount, 0x10000);
+                int count = land ? (int)EditorData.LandCount : Math.Min(files.Arts.File.Entries.Length - (int)EditorData.LandCount, WideArtProfile.StaticCapacity(files.Arts.File.Entries.Length, (int)EditorData.LandCount));
                 for (int id = 0; id < count; id++)
                 {
                     uint index = land ? (uint)id : EditorData.LandCount + (uint)id;

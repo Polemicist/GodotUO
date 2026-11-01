@@ -83,7 +83,7 @@ public partial class ArtPanel : GridPanel
             var list = new List<int>();
             int count = Land
                 ? (int)EditorData.LandCount
-                : Math.Min(Data.Files.Arts.File.Entries.Length - (int)EditorData.LandCount, 0x10000);
+                : Math.Min(Data.Files.Arts.File.Entries.Length - (int)EditorData.LandCount, WideArtProfile.StaticCapacity(Data.Files.Arts.File.Entries.Length, (int)EditorData.LandCount));
             for (int id = 0; id < count; id++)
             {
                 if (Data.HasArt(Index(id)))
