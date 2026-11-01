@@ -36,7 +36,7 @@ public partial class NativePhysicalWorldProbe
             BinaryPrimitives.WriteUInt64LittleEndian(record[37..], triangle.Owner.Identity);
             BinaryPrimitives.WriteUInt32LittleEndian(record[45..], triangle.Owner.Component);
             record[49] = (byte)triangle.Material; record[50] = (byte)triangle.Provenance;
-            BinaryPrimitives.WriteUInt16LittleEndian(record[51..], triangle.Graphic);
+            BinaryPrimitives.WriteUInt16LittleEndian(record[51..], (ushort)triangle.Graphic); // shortcut: the probe fingerprint keeps 16 bits of art; widen the record if wide art must be told apart here
             triangles.AppendData(record);
         }
         BinaryPrimitives.WriteInt32LittleEndian(record, snapshot.UnknownCells.Length);

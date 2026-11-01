@@ -294,7 +294,7 @@ namespace GUO.Game.GameObjects
                     animGraphic = (ushort)(weapon.Graphic + 1);
                 }
 
-                if (AbilityData.GraphicToAbilitiesMap.TryGetValue(weapon.Graphic, out var abilities) || AbilityData.GraphicToAbilitiesMap.TryGetValue(animGraphic, out abilities))
+                if (AbilityData.GraphicToAbilitiesMap.TryGetValue((ushort)weapon.Graphic, out var abilities) || AbilityData.GraphicToAbilitiesMap.TryGetValue(animGraphic, out abilities))
                 {
                     abilities.Set(Abilities);
                 }

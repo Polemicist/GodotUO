@@ -225,7 +225,7 @@ internal sealed class WorldEditor
             Hue = hue,
         }), $"stamp 0x{id:X4} at {x},{y} z {z}");
 
-    public bool Erase(int facet, int x, int y, sbyte z, ushort id) =>
+    public bool Erase(int facet, int x, int y, sbyte z, uint id) =>
         Edit(facet, x >> 3, y >> 3, b =>
         {
             int i = b.Statics.FindIndex(s => s.Id == id && s.X == (x & 7) && s.Y == (y & 7) && s.Z == z);
@@ -242,7 +242,7 @@ internal sealed class WorldEditor
             b.LandZ[i] = (sbyte)Math.Clamp(b.LandZ[i] + delta, sbyte.MinValue, sbyte.MaxValue);
         }, $"altitude {(delta > 0 ? "+" : "")}{delta} at {x},{y}");
 
-    public bool SetHue(int facet, int x, int y, sbyte z, ushort id, ushort hue) =>
+    public bool SetHue(int facet, int x, int y, sbyte z, uint id, ushort hue) =>
         Edit(facet, x >> 3, y >> 3, b =>
         {
             int i = b.Statics.FindIndex(s => s.Id == id && s.X == (x & 7) && s.Y == (y & 7) && s.Z == z);

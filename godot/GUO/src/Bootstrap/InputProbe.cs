@@ -744,7 +744,7 @@ internal static partial class InputProbe
                     continue;
                 }
 
-                if (!string.IsNullOrWhiteSpace(GUO.IO.Audio.VoiceManager.ResolveRule(mob.Serial, mob.Name, mob.Graphic)))
+                if (!string.IsNullOrWhiteSpace(GUO.IO.Audio.VoiceManager.ResolveRule(mob.Serial, mob.Name, (ushort)mob.Graphic)))
                 {
                     continue;
                 }
@@ -763,7 +763,7 @@ internal static partial class InputProbe
             if (candidate != null)
             {
                 GUO.IO.Audio.VoiceManager.DesignVoice((int)candidate.Serial, candidate.Name,
-                    candidate.Graphic, candidate.GetType().Name);
+                    (int)candidate.Graphic, candidate.GetType().Name);
                 bool designed = false;
                 for (int i = 0; i < 1200 && !designed; i++)
                 {
@@ -794,7 +794,7 @@ internal static partial class InputProbe
                     continue;
                 }
 
-                string voice = GUO.IO.Audio.VoiceManager.ResolveVoice(mob.Serial, mob.Name, mob.Graphic);
+                string voice = GUO.IO.Audio.VoiceManager.ResolveVoice(mob.Serial, mob.Name, (ushort)mob.Graphic);
                 if (string.IsNullOrWhiteSpace(voice))
                 {
                     continue;

@@ -2409,7 +2409,7 @@ namespace GUO.Input.Gamepad
             BlitGump(canvas, body, mobile.Hue);
             Span<ushort> layerGraphics = stackalloc ushort[PaperdollOrder.N];
             PaperdollOrder.GraphicsFromEntity(mobile, layerGraphics);
-            bool altTorso = mobile.IsFemale || DollIsGargoyle(mobile.Graphic);
+            bool altTorso = mobile.IsFemale || DollIsGargoyle((ushort)mobile.Graphic);
             Span<Layer> order = stackalloc Layer[PaperdollOrder.N];
             PaperdollOrder.Build(layerGraphics, altTorso, order);
             Span<Layer> layers = stackalloc Layer[PaperdollOrder.N];
@@ -2436,7 +2436,7 @@ namespace GUO.Input.Gamepad
 
         private static int DollEquipStamp(PlayerMobile mobile)
         {
-            int h = mobile.Graphic ^ (mobile.Hue << 5) ^ (mobile.IsFemale ? 1 : 0);
+            int h = (int)mobile.Graphic ^ (mobile.Hue << 5) ^ (mobile.IsFemale ? 1 : 0);
 
             foreach (Layer layer in Worn)
             {
@@ -2469,7 +2469,7 @@ namespace GUO.Input.Gamepad
         {
             ushort animID = equip.ItemData.AnimID;
             int offset = mobile.IsFemale ? Constants.FEMALE_GUMP_OFFSET : Constants.MALE_GUMP_OFFSET;
-            ushort mobileGraphic = mobile.Graphic;
+            ushort mobileGraphic = (ushort)mobile.Graphic;
             Client.Game.UO.Animations.ConvertBodyIfNeeded(ref mobileGraphic);
 
             if (Client.Game.UO.FileManager.Animations.EquipConversions.TryGetValue(

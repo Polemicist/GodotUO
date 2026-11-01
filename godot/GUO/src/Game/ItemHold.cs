@@ -60,8 +60,8 @@ namespace GUO.Game
         {
             Enabled = true;
             Serial = item.Serial;
-            Graphic = item.Graphic;
-            DisplayedGraphic = item.IsCoin && amount == 1 ? item.Graphic : item.DisplayedGraphic;
+            Graphic = (ushort)item.Graphic; // PORT DEVIATION (GUO): uint art ids
+            DisplayedGraphic = item.IsCoin && amount == 1 ? (ushort)item.Graphic : item.DisplayedGraphic;
             X = item.X;
             Y = item.Y;
             Z = item.Z;

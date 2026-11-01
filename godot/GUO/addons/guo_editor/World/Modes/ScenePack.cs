@@ -91,7 +91,7 @@ internal static class ScenePack
 
         float scale = xs.X / 22f;   // viewport pixels per world pixel
         var objects = new JsonArray();
-        var art = new Dictionary<ushort, (int W, int H)>();
+        var art = new Dictionary<uint, (int W, int H)>();
         foreach (CellQuad q in g.Cells())
         {
             foreach (ObjInfo ob in ctx.Data.Objects(q.X, q.Y))

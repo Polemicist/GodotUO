@@ -53,7 +53,7 @@ namespace GUO.Game.GameObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override ushort GetGraphicForAnimation()
         {
-            ushort g = Graphic;
+            ushort g = (ushort)Graphic; // PORT DEVIATION (GUO): GameObject.Graphic is uint; bodies stay 16-bit
 
             switch (g)
             {
@@ -1595,12 +1595,12 @@ namespace GUO.Game.GameObjects
                 return 0;
             }
 
-            AnimationFlags flags = animations.GetAnimFlags(mobile.Graphic);
+            AnimationFlags flags = animations.GetAnimFlags((ushort)mobile.Graphic);
             AnimationGroupsType type = AnimationGroupsType.Monster;
 
             if ((flags & AnimationFlags.Found) != 0)
             {
-                type = animations.GetAnimType(mobile.Graphic);
+                type = animations.GetAnimType((ushort)mobile.Graphic);
             }
 
             if (type == AnimationGroupsType.Monster)
@@ -1663,12 +1663,12 @@ namespace GUO.Game.GameObjects
                         if (
                             mobile.IsGargoyle
                             && mobile.IsFlying
-                            && animations.AnimationExists(mobile.Graphic, 71)
+                            && animations.AnimationExists((ushort)mobile.Graphic, 71)
                         )
                         {
                             return 71;
                         }
-                        else if (animations.AnimationExists(mobile.Graphic, 31))
+                        else if (animations.AnimationExists((ushort)mobile.Graphic, 31))
                         {
                             return 31;
                         }
@@ -1688,7 +1688,7 @@ namespace GUO.Game.GameObjects
                         if (
                             mobile.IsGargoyle
                             && mobile.IsFlying
-                            && animations.AnimationExists(mobile.Graphic, 72)
+                            && animations.AnimationExists((ushort)mobile.Graphic, 72)
                         )
                         {
                             return 72;
@@ -1715,7 +1715,7 @@ namespace GUO.Game.GameObjects
                 return 2;
             }
 
-            if (mode % 2 != 0 && animations.AnimationExists(mobile.Graphic, 6))
+            if (mode % 2 != 0 && animations.AnimationExists((ushort)mobile.Graphic, 6))
             {
                 return 6;
             }
@@ -1726,12 +1726,12 @@ namespace GUO.Game.GameObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte GetObjectNewAnimationType_1_2(Animations animations, Mobile mobile, ushort action, byte mode)
         {
-            AnimationFlags  flags = animations.GetAnimFlags(mobile.Graphic);
+            AnimationFlags  flags = animations.GetAnimFlags((ushort)mobile.Graphic);
             AnimationGroupsType type = AnimationGroupsType.Monster;
 
             if ((flags & AnimationFlags.Found) != 0)
             {
-                type = animations.GetAnimType(mobile.Graphic);
+                type = animations.GetAnimType((ushort)mobile.Graphic);
             }
 
             if (type != AnimationGroupsType.Monster)
@@ -1755,12 +1755,12 @@ namespace GUO.Game.GameObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte GetObjectNewAnimationType_3(Animations animations, Mobile mobile, ushort action, byte mode)
         {
-            AnimationFlags  flags = animations.GetAnimFlags(mobile.Graphic);
+            AnimationFlags  flags = animations.GetAnimFlags((ushort)mobile.Graphic);
             AnimationGroupsType type = AnimationGroupsType.Monster;
 
             if ((flags & AnimationFlags.Found) != 0)
             {
-                type = animations.GetAnimType(mobile.Graphic);
+                type = animations.GetAnimType((ushort)mobile.Graphic);
             }
 
             if (type != AnimationGroupsType.Monster)
@@ -1799,12 +1799,12 @@ namespace GUO.Game.GameObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte GetObjectNewAnimationType_4(Animations animations, Mobile mobile, ushort action, byte mode)
         {
-            AnimationFlags  flags = animations.GetAnimFlags(mobile.Graphic);
+            AnimationFlags  flags = animations.GetAnimFlags((ushort)mobile.Graphic);
             AnimationGroupsType type = AnimationGroupsType.Monster;
 
             if ((flags & AnimationFlags.Found) != 0)
             {
-                type = animations.GetAnimType(mobile.Graphic);
+                type = animations.GetAnimType((ushort)mobile.Graphic);
             }
 
             if (type != AnimationGroupsType.Monster)
@@ -1814,7 +1814,7 @@ namespace GUO.Game.GameObjects
                     if (
                         mobile.IsGargoyle
                         && mobile.IsFlying
-                        && animations.AnimationExists(mobile.Graphic, 77)
+                        && animations.AnimationExists((ushort)mobile.Graphic, 77)
                     )
                     {
                         return 77;
@@ -1837,12 +1837,12 @@ namespace GUO.Game.GameObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte GetObjectNewAnimationType_5(Animations animations, Mobile mobile, ushort action, byte mode)
         {
-            AnimationFlags  flags = animations.GetAnimFlags(mobile.Graphic);
+            AnimationFlags  flags = animations.GetAnimFlags((ushort)mobile.Graphic);
             AnimationGroupsType type = AnimationGroupsType.Monster;
 
             if ((flags & AnimationFlags.Found) != 0)
             {
-                type = animations.GetAnimType(mobile.Graphic);
+                type = animations.GetAnimType((ushort)mobile.Graphic);
             }
 
             if (type <= AnimationGroupsType.SeaMonster)
@@ -1885,12 +1885,12 @@ namespace GUO.Game.GameObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte GetObjectNewAnimationType_6_14(Animations animations, Mobile mobile, ushort action, byte mode)
         {
-            AnimationFlags  flags = animations.GetAnimFlags(mobile.Graphic);
+            AnimationFlags  flags = animations.GetAnimFlags((ushort)mobile.Graphic);
             AnimationGroupsType type = AnimationGroupsType.Monster;
 
             if ((flags & AnimationFlags.Found) != 0)
             {
-                type = animations.GetAnimType(mobile.Graphic);
+                type = animations.GetAnimType((ushort)mobile.Graphic);
             }
 
             if (type != AnimationGroupsType.Monster)
@@ -1942,12 +1942,12 @@ namespace GUO.Game.GameObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte GetObjectNewAnimationType_8(Animations animations, Mobile mobile, ushort action, byte mode)
         {
-            AnimationFlags  flags = animations.GetAnimFlags(mobile.Graphic);
+            AnimationFlags  flags = animations.GetAnimFlags((ushort)mobile.Graphic);
             AnimationGroupsType type = AnimationGroupsType.Monster;
 
             if ((flags & AnimationFlags.Found) != 0)
             {
-                type = animations.GetAnimType(mobile.Graphic);
+                type = animations.GetAnimType((ushort)mobile.Graphic);
             }
 
             if (type != AnimationGroupsType.Monster)
@@ -1971,12 +1971,12 @@ namespace GUO.Game.GameObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte GetObjectNewAnimationType_9(Animations animations, Mobile mobile, ushort action, byte mode)
         {
-            AnimationFlags  flags = animations.GetAnimFlags(mobile.Graphic);
+            AnimationFlags  flags = animations.GetAnimFlags((ushort)mobile.Graphic);
             AnimationGroupsType type = AnimationGroupsType.Monster;
 
             if ((flags & AnimationFlags.Found) != 0)
             {
-                type = animations.GetAnimType(mobile.Graphic);
+                type = animations.GetAnimType((ushort)mobile.Graphic);
             }
 
             if (type != AnimationGroupsType.Monster)
@@ -1998,12 +1998,12 @@ namespace GUO.Game.GameObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte GetObjectNewAnimationType_10(Animations animations, Mobile mobile, ushort action, byte mode)
         {
-            AnimationFlags  flags = animations.GetAnimFlags(mobile.Graphic);
+            AnimationFlags  flags = animations.GetAnimFlags((ushort)mobile.Graphic);
             AnimationGroupsType type = AnimationGroupsType.Monster;
 
             if ((flags & AnimationFlags.Found) != 0)
             {
-                type = animations.GetAnimType(mobile.Graphic);
+                type = animations.GetAnimType((ushort)mobile.Graphic);
             }
 
             if (type != AnimationGroupsType.Monster)
@@ -2025,12 +2025,12 @@ namespace GUO.Game.GameObjects
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static byte GetObjectNewAnimationType_11(Animations animations, Mobile mobile, ushort action, byte mode)
         {
-            AnimationFlags  flags = animations.GetAnimFlags(mobile.Graphic);
+            AnimationFlags  flags = animations.GetAnimFlags((ushort)mobile.Graphic);
             AnimationGroupsType type = AnimationGroupsType.Monster;
 
             if ((flags & AnimationFlags.Found) != 0)
             {
-                type = animations.GetAnimType(mobile.Graphic);
+                type = animations.GetAnimType((ushort)mobile.Graphic);
             }
 
             if (type != AnimationGroupsType.Monster)

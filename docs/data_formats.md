@@ -4540,3 +4540,10 @@ On:
 - Static capacity is the art index's static slot count (`artidx.mul` entries
   minus 0x4000 land), rounded down to a multiple of 32 and clamped to
   0x10000..0x40000. The editor's art grid and asset fields list that many.
+- `GameObject.Graphic` and `Static.OriginalGraphic` are `uint`, so a static
+  keeps its full art id through drawing, picking, tiledata and lighting. Bodies,
+  animations, gumps, house-customization pieces and packet fields stay 16-bit
+  and cast at their seam. Season swaps, themes, variant art, light hues, HD art,
+  repaint and splat skins exist only for ids up to 0xFFFF; a wider id has none.
+  Targeting a wide static sends the low 16 bits, because the target packet
+  carries a 16-bit graphic.

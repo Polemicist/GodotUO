@@ -289,7 +289,7 @@ namespace GUO.Game.Map
             short priorityZ = obj.Z;
             sbyte state = -1;
 
-            ushort graphic = obj.Graphic;
+            uint graphic = obj.Graphic; // PORT DEVIATION (GUO): data_formats section 53
 
             switch (obj)
             {

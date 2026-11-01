@@ -9,11 +9,11 @@ namespace GUO.Renderer.SpeedMode.PhysicalWorld;
 // Derived recipes only: native pixel arrays are read transiently and never retained.
 internal sealed class PhysicalArtRecipe
 {
-    private static readonly Dictionary<ushort, PhysicalArtRecipe> Cache = new();
+    private static readonly Dictionary<uint, PhysicalArtRecipe> Cache = new();
     private static object _source;
     private static ulong _revision;
     private readonly ArtLoader _loader;
-    private readonly ushort _graphic;
+    private readonly uint _graphic;
     private readonly Dictionary<float, bool> _floors = new();
     private readonly Dictionary<(WallFaces.Face Face, float Lo, float Hi, float Height), bool> _walls = new();
     public readonly int Width, Height;
@@ -21,7 +21,7 @@ internal sealed class PhysicalArtRecipe
     public readonly ulong CoverageFingerprint;
 
     // Game-thread-only, like the native art loader and producer.
-    internal static PhysicalArtRecipe For(ushort graphic)
+    internal static PhysicalArtRecipe For(uint graphic)
     {
         var source = Client.Game.UO.FileManager.Arts;
         if (!ReferenceEquals(_source, source) || _revision != source.DataRevision)
@@ -34,7 +34,7 @@ internal sealed class PhysicalArtRecipe
         return recipe;
     }
 
-    private PhysicalArtRecipe(ArtLoader loader, ushort graphic, ArtInfo art)
+    private PhysicalArtRecipe(ArtLoader loader, uint graphic, ArtInfo art)
     {
         _loader = loader; _graphic = graphic;
         Width = art.Width; Height = art.Height;

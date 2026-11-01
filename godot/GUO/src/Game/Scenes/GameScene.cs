@@ -510,7 +510,7 @@ namespace GUO.Game.Scenes
             {
                 ref LightData light = ref _lights[_lightCount];
 
-                ushort graphic = lightObject.Graphic;
+                uint graphic = lightObject.Graphic; // PORT DEVIATION (GUO): data_formats section 53
 
                 if (
                     graphic >= 0x3E02 && graphic <= 0x3E0B
@@ -587,7 +587,7 @@ namespace GUO.Game.Scenes
                         light.ID = 1;
                     }
 
-                    if (LightColors.GetHue(graphic, out ushort color, out bool ishue))
+                    if (graphic <= ushort.MaxValue && LightColors.GetHue((ushort)graphic, out ushort color, out bool ishue)) // PORT DEVIATION (GUO): light hues exist only for 16-bit art
                     {
                         light.Color = color;
                         light.IsHue = ishue;

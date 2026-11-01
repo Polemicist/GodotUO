@@ -68,7 +68,7 @@ namespace GUO.Game.GameObjects
 
         // FIXME: remove it
         public sbyte FoliageIndex = -1;
-        public ushort Graphic;
+        public uint Graphic; // PORT DEVIATION (GUO): static art ids above 0xFFFF (data_formats section 53)
         public ushort Hue;
         public Vector3 Offset;
         public short PriorityZ;
@@ -425,7 +425,7 @@ namespace GUO.Game.GameObjects
             FrameInfo = Rectangle.Empty;
         }
 
-        public static bool CanBeDrawn(World world, ushort g)
+        public static bool CanBeDrawn(World world, uint g) // PORT DEVIATION (GUO): data_formats section 53
         {
             if (Client.Game == null)
                 return true;

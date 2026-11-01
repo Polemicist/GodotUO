@@ -96,7 +96,7 @@ namespace GUO.Game.GameObjects
                     return MultiGraphic;
                 }
 
-                return Graphic;
+                return (ushort)Graphic; // PORT DEVIATION (GUO): uint art ids; the display id stays 16-bit
             }
             set => _displayedGraphic = value;
         }
@@ -383,7 +383,7 @@ namespace GUO.Game.GameObjects
 
         public override ushort GetGraphicForAnimation()
         {
-            var graphic = Graphic;
+            var graphic = (ushort)Graphic; // PORT DEVIATION (GUO): animation ids stay 16-bit
 
             if (Layer == Layer.Mount)
             {

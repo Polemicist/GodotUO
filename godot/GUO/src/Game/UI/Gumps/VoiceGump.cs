@@ -209,7 +209,7 @@ namespace GUO.Game.UI.Gumps
                             {
                                 _serial = mob.Serial;
                                 _mobName = mob.Name ?? "";
-                                _mobBody = mob.Graphic;
+                                _mobBody = (ushort)mob.Graphic;
                                 string resolved = VoiceManager.ResolveVoice(_serial, _mobName, _mobBody);
                                 int at = _voices.FindIndex(v =>
                                     string.Equals(v, resolved, System.StringComparison.OrdinalIgnoreCase));

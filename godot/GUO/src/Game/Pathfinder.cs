@@ -87,7 +87,7 @@ namespace GUO.Game
                     continue;
                 }
 
-                ushort graphicHelper = obj.Graphic;
+                uint graphicHelper = obj.Graphic; // PORT DEVIATION (GUO): data_formats section 53
 
                 switch (obj)
                 {

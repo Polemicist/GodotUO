@@ -185,7 +185,7 @@ namespace GUO.Game.GameObjects
                     && mountGraphic < Client.Game.UO.Animations.MaxAnimationCount
                 )
                 {
-                    if (Mounts.TryGet(mount.Graphic, out var mountInfo))
+                    if (Mounts.TryGet((ushort)mount.Graphic, out var mountInfo))
                     {
                         mountOffsetY = mountInfo.OffsetY;
                     }
@@ -403,7 +403,7 @@ namespace GUO.Game.GameObjects
 
                             if (
                                 Client.Game.UO.FileManager.Animations.EquipConversions.TryGetValue(
-                                    Graphic,
+                                    (ushort)Graphic,
                                     out Dictionary<ushort, EquipConvData> map
                                 )
                             )
@@ -521,7 +521,7 @@ namespace GUO.Game.GameObjects
 
                 if (
                     Client.Game.UO.FileManager.Animations.EquipConversions.TryGetValue(
-                        owner.Graphic,
+                        (ushort)owner.Graphic,
                         out Dictionary<ushort, EquipConvData> map
                     )
                 )
@@ -1091,7 +1091,7 @@ namespace GUO.Game.GameObjects
                                 return true;
                             }
 
-                            if (Mounts.TryGet(mount.Graphic, out var moutInfo))
+                            if (Mounts.TryGet((ushort)mount.Graphic, out var moutInfo))
                             {
                                 position.Y += moutInfo.OffsetY;
                             }
@@ -1210,7 +1210,7 @@ namespace GUO.Game.GameObjects
             // use the equip AnimID (item.ItemData.AnimID). The exception robe graphics are
             // open/half robes that leave the chest/arms visible.
             Item robe = mobile.FindItemByLayer(Layer.Robe);
-            ushort robeGfx = robe?.Graphic ?? 0;
+            ushort robeGfx = (ushort)(robe?.Graphic ?? 0);
             ushort robeAnim = robe?.ItemData.AnimID ?? 0;
 
             bool robeLeavesChestVisible =
@@ -1226,7 +1226,7 @@ namespace GUO.Game.GameObjects
 
                     if (robeAnim != 0x504 && pantsAnim != 0x513 && pantsAnim != 0x514)
                     {
-                        ushort pantsGfx = pants?.Graphic ?? 0;
+                        ushort pantsGfx = (ushort)(pants?.Graphic ?? 0);
 
                         if (pantsGfx < 0xAEB2)
                         {

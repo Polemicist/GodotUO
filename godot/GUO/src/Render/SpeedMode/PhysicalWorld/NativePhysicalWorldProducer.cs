@@ -61,7 +61,7 @@ internal static class NativePhysicalWorldProducer
         => (flags & (TileFlag.Roof | TileFlag.Wall | TileFlag.Door | TileFlag.Window
             | TileFlag.Surface | TileFlag.Impassable | TileFlag.Bridge | TileFlag.NoShoot)) != 0;
 
-    private readonly record struct Source(int X, int Y, int Z, ushort Graphic,
+    private readonly record struct Source(int X, int Y, int Z, uint Graphic,
         PhysicalOwnerKey Owner, StaticTiles Tile, bool Moving = false);
     private readonly record struct Ground(ushort Graphic, int Z);
 
@@ -74,7 +74,7 @@ internal static class NativePhysicalWorldProducer
         private readonly Dictionary<(int, int), Ground> _ground = new();
         private readonly List<Source> _sources = new();
         private readonly Dictionary<(int, int), List<Source>> _roofs = new();
-        private readonly Dictionary<ushort, PhysicalArtRecipe> _art = new();
+        private readonly Dictionary<uint, PhysicalArtRecipe> _art = new();
         private ulong _fingerprint = 14695981039346656037UL;
         private int _blocks, _statics, _items, _multis, _excluded, _unsupported;
         private int _visitedRecords;
@@ -222,7 +222,7 @@ internal static class NativePhysicalWorldProducer
             return true;
         }
 
-        private StaticTiles Tile(ushort graphic)
+        private StaticTiles Tile(uint graphic)
         {
             ref var data = ref Client.Game.UO.FileManager.TileData.StaticData;
             return graphic < data.Length ? data[graphic] : default;
@@ -363,7 +363,7 @@ internal static class NativePhysicalWorldProducer
             return true;
         }
 
-        private PhysicalArtRecipe Recipe(ushort graphic)
+        private PhysicalArtRecipe Recipe(uint graphic)
         {
             if (_art.TryGetValue(graphic, out PhysicalArtRecipe recipe)) return recipe;
             recipe = PhysicalArtRecipe.For(graphic);
@@ -380,7 +380,7 @@ internal static class NativePhysicalWorldProducer
         }
 
         private void Quad(N3 a, N3 b, N3 c, N3 d, PhysicalOwnerKey owner,
-            PhysicalMaterial material, PhysicalProvenance provenance, ushort graphic)
+            PhysicalMaterial material, PhysicalProvenance provenance, uint graphic)
         {
             _builder.AddTriangle(new PhysicalTriangle(a, b, c, owner, material, provenance, graphic));
             _builder.AddTriangle(new PhysicalTriangle(a, c, d, owner, material, provenance, graphic));

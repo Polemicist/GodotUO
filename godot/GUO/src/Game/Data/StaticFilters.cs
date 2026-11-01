@@ -238,9 +238,9 @@ namespace GUO.Game.Data
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsTree(ushort g, out int index)
+        public static bool IsTree(uint g, out int index) // PORT DEVIATION (GUO): uint art ids, data_formats section 53
         {
-            STATIC_TILES_FILTER_FLAGS flag = _filteredTiles[g];
+            STATIC_TILES_FILTER_FLAGS flag = g < (uint)_filteredTiles.Length ? _filteredTiles[g] : 0;
 
             if ((flag & STATIC_TILES_FILTER_FLAGS.STFF_STUMP) != 0)
             {
@@ -262,19 +262,19 @@ namespace GUO.Game.Data
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsVegetation(ushort g)
+        public static bool IsVegetation(uint g)
         {
-            return (_filteredTiles[g] & STATIC_TILES_FILTER_FLAGS.STFF_VEGETATION) != 0;
+            return g < (uint)_filteredTiles.Length && (_filteredTiles[g] & STATIC_TILES_FILTER_FLAGS.STFF_VEGETATION) != 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsCave(ushort g)
+        public static bool IsCave(uint g)
         {
-            return (_filteredTiles[g] & STATIC_TILES_FILTER_FLAGS.STFF_CAVE) != 0;
+            return g < (uint)_filteredTiles.Length && (_filteredTiles[g] & STATIC_TILES_FILTER_FLAGS.STFF_CAVE) != 0;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsRock(ushort g)
+        public static bool IsRock(uint g)
         {
             switch (g)
             {
@@ -293,37 +293,37 @@ namespace GUO.Game.Data
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsField(ushort g)
+        public static bool IsField(uint g)
         {
             return g >= 0x398C && g <= 0x399F || g >= 0x3967 && g <= 0x397A || g >= 0x3946 && g <= 0x3964 || g >= 0x3914 && g <= 0x3929;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsFireField(ushort g)
+        public static bool IsFireField(uint g)
         {
             return g >= 0x398C && g <= 0x399F;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsParalyzeField(ushort g)
+        public static bool IsParalyzeField(uint g)
         {
             return g >= 0x3967 && g <= 0x397A;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsEnergyField(ushort g)
+        public static bool IsEnergyField(uint g)
         {
             return g >= 0x3946 && g <= 0x3964;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsPoisonField(ushort g)
+        public static bool IsPoisonField(uint g)
         {
             return g >= 0x3914 && g <= 0x3929;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsWallOfStone(ushort g)
+        public static bool IsWallOfStone(uint g)
         {
             return g == 0x82;
         }

@@ -367,7 +367,7 @@ namespace GUO.Game.UI.Gumps
                                     {
                                         if (obj.Hue == 0)
                                         {
-                                            color = obj.Graphic;
+                                            color = (int)obj.Graphic;
                                             isLand = false;
                                         }
                                         else

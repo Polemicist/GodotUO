@@ -12,7 +12,7 @@ namespace GUO.Renderer.SpeedMode.PhysicalWorld;
 internal static class PhysicalReceiverRecipe
 {
     internal readonly record struct RoofFit(bool Qualified, float Lift, float IntersectionOverUnion, float Coverage);
-    private static readonly Dictionary<(ushort Graphic, int X, int Y), RoofFit> RoofFits = new();
+    private static readonly Dictionary<(uint Graphic, int X, int Y), RoofFit> RoofFits = new();
     private static object _artSource;
     private static ulong _artRevision;
 
@@ -141,7 +141,7 @@ internal static class PhysicalReceiverRecipe
         return found;
     }
 
-    internal static RoofFit FitRoof(ushort graphic, int gradientX, int gradientY)
+    internal static RoofFit FitRoof(uint graphic, int gradientX, int gradientY)
     {
         var arts = Client.Game.UO.FileManager.Arts;
         if (!ReferenceEquals(arts, _artSource) || _artRevision != arts.DataRevision)

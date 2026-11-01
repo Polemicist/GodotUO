@@ -223,6 +223,10 @@ namespace GUO.Assets
         /// theme (in activation order) whose zone covers the spot and whose
         /// images hold the graphic wins.
         /// </summary>
+        // PORT DEVIATION (GUO): uint art ids (data_formats section 53); themes and variants are keyed by 16-bit art, so a wide id has none.
+        public static VariantImage Resolve(World world, int x, int y, VariantKind kind, uint graphic) =>
+            graphic <= ushort.MaxValue ? Resolve(world, x, y, kind, (ushort)graphic) : null;
+
         public static VariantImage Resolve(World world, int x, int y, VariantKind kind, ushort graphic)
         {
             // Previews win over everything (and ignore zones: they are a

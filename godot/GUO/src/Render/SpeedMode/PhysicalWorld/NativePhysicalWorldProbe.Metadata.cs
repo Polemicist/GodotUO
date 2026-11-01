@@ -134,7 +134,7 @@ public partial class NativePhysicalWorldProbe
         int stableStamp = mesh.Statics.ContentStamp; mesh.RefreshPhysicalRoofReceivers();
         Check(mesh.Statics.ContentStamp == stableStamp, "unchanged roof refresh preserves resident content stamp");
 
-        ushort originalGraphic = activation.Graphic;
+        uint originalGraphic = activation.Graphic;
         try {
             activation.Graphic = originalGraphic == 0x0495 ? (ushort)0x05E4 : (ushort)0x0495;
             Check(!PhysicalReceiverRecipe.NativePlacement(activation) && !QualifiedRow(SurfaceRow.For(activation, true).Data),

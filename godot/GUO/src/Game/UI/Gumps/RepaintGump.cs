@@ -271,7 +271,8 @@ namespace GUO.Game.UI.Gumps
                         {
                             if (obj != null)
                             {
-                                _targetGraphic = obj.Graphic;
+                                if (obj.Graphic > ushort.MaxValue) { GameActions.Print(World, $"Repaint: art above 0xFFFF is not supported"); return; } // PORT DEVIATION (GUO): overrides are keyed by 16-bit art
+                                _targetGraphic = (ushort)obj.Graphic;
                                 _targetObj = obj;
                                 _targetIsLand = obj is Land;
                                 GameActions.Print(World,

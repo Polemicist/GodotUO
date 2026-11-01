@@ -32,7 +32,7 @@ internal enum Problem
 /// <summary>One static, multi part or placed item on a cell, as the modes read it.</summary>
 internal struct ObjInfo
 {
-    public ushort Graphic;
+    public uint Graphic;
     public sbyte Z;
     public byte Height;
     public TileFlag Flags;
@@ -155,7 +155,7 @@ internal sealed class WorldData
                     switch (o)
                     {
                         case Land land:
-                            b.LandId[i] = land.Graphic;
+                            b.LandId[i] = (ushort)land.Graphic;
                             b.LandZ[i] = land.Z;
                             b.LandMin[i] = land.MinZ;
                             b.LandAvg[i] = land.AverageZ;
@@ -176,7 +176,7 @@ internal sealed class WorldData
         return b;
     }
 
-    private static void Add(BlockData b, int i, ushort graphic, sbyte z, TileDataLoader tiles, bool item, bool multi)
+    private static void Add(BlockData b, int i, uint graphic, sbyte z, TileDataLoader tiles, bool item, bool multi)
     {
         if (graphic >= tiles.StaticData.Length)
         {

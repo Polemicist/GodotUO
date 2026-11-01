@@ -387,7 +387,7 @@ namespace GUO.Game.Scenes
         /// </summary>
         private static int CoverHalfWidth(GameObject obj)
         {
-            ushort graphic = obj.Graphic;
+            uint graphic = obj.Graphic;
             ref GUO.Assets.StaticTiles data = ref Client.Game.UO.FileManager.TileData.StaticData[graphic];
 
             if (obj is not (Static or Multi) || data.IsAnimated || data.IsWet || data.IsFoliage

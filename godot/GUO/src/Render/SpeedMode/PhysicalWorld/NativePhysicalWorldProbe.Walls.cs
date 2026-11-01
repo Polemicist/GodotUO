@@ -10,7 +10,7 @@ namespace GUO.Renderer.SpeedMode.PhysicalWorld;
 
 public partial class NativePhysicalWorldProbe
 {
-    private readonly record struct WallWitness(uint Serial, ushort Graphic, int X, int Y, int Z, int Height);
+    private readonly record struct WallWitness(uint Serial, uint Graphic, int X, int Y, int Z, int Height);
 
     private ushort FindReceiverWall(bool alongX)
     {

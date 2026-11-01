@@ -36,7 +36,7 @@ internal static class Mannequin
         byte dir = direction;
         bool mirror = false;
         Client.Game.UO.Animations.GetAnimDirection(ref dir, ref mirror);
-        var frames = Client.Game.UO.Animations.GetAnimationFrames(m.Graphic, StandGroup, dir, out _, out _);
+        var frames = Client.Game.UO.Animations.GetAnimationFrames((ushort)m.Graphic, StandGroup, dir, out _, out _);
 
         return Math.Max(1, frames.Length);
     }
@@ -55,7 +55,7 @@ internal static class Mannequin
         bool mirror = false;
         Client.Game.UO.Animations.GetAnimDirection(ref dir, ref mirror);
 
-        complete &= Layer(canvas, atlases, m.Graphic, dir, mirror, frame, m.Hue, false, false, m.Graphic);
+        complete &= Layer(canvas, atlases, (ushort)m.Graphic, dir, mirror, frame, m.Hue, false, false, (ushort)m.Graphic);
 
         int orderRow = Math.Clamp(direction & 7, 0, 7);
 
@@ -73,7 +73,7 @@ internal static class Mannequin
             ushort hue = item.Hue;
 
             // An elf's or a gargoyle's own art for the same item (EquipConversions).
-            if (Client.Game.UO.FileManager.Animations.EquipConversions.TryGetValue(m.Graphic, out Dictionary<ushort, EquipConvData> map)
+            if (Client.Game.UO.FileManager.Animations.EquipConversions.TryGetValue((ushort)m.Graphic, out Dictionary<ushort, EquipConvData> map)
                 && map.TryGetValue(item.ItemData.AnimID, out EquipConvData conv))
             {
                 graphic = conv.Graphic;
@@ -92,7 +92,7 @@ internal static class Mannequin
                 hue &= 0x7FFF;
             }
 
-            complete &= Layer(canvas, atlases, graphic, dir, mirror, frame, hue, partial, true, m.Graphic);
+            complete &= Layer(canvas, atlases, graphic, dir, mirror, frame, hue, partial, true, (ushort)m.Graphic);
         }
 
         return canvas;

@@ -609,7 +609,7 @@ namespace GUO.Game.UI.Gumps
 
                             (int res1, int res2) = _customHouseManager.ExistsInList(
                                 ref state,
-                                item.Graphic
+                                (ushort)item.Graphic
                             );
 
                             if (res1 != -1 && res2 != -1)

@@ -58,7 +58,7 @@ namespace GUO.Game.GameObjects
                 {
                     DrawStatic(
                         batcher,
-                        Graphic,
+                        (ushort)Graphic,
                         posX,
                         posY,
                         hueVec,
@@ -156,7 +156,7 @@ namespace GUO.Game.GameObjects
                     // dest footprint at 1/k, chosen filter for HD only.
                     // Native art keeps Nearest; Auto uses nearest mipmaps
                     // unless HD scale equals the current zoom.
-                    if (ThemedVariant == null && Client.Game.UO.Arts.TryGetHd(true, Graphic, out Godot.Texture2D hdTex, out Rectangle hdUv, out _, out _))
+                    if (ThemedVariant == null && Client.Game.UO.Arts.TryGetHd(true, (ushort)Graphic, out Godot.Texture2D hdTex, out Rectangle hdUv, out _, out _))
                     {
                         var pos = new Vector2(posX, posY);
                         var hdScale = new Vector2((float)uv.Width / hdUv.Width, (float)uv.Height / hdUv.Height);

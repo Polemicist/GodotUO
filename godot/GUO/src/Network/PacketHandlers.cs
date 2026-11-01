@@ -1413,7 +1413,7 @@ namespace GUO.Network
 
                         gump.AddItem(
                             it.Serial,
-                            it.Graphic,
+                            (ushort)it.Graphic,
                             it.Hue,
                             it.Amount,
                             it.Price,
@@ -2479,7 +2479,7 @@ namespace GUO.Network
             byte delay = p.ReadUInt8();
 
             mobile.SetAnimation(
-                Mobile.GetReplacedObjectAnimation(mobile.Graphic, action),
+                Mobile.GetReplacedObjectAnimation((ushort)mobile.Graphic, action),
                 delay,
                 (byte)frame_count,
                 (byte)repeat_count,
@@ -3786,7 +3786,7 @@ namespace GUO.Network
             }
 
             var animations = Client.Game.UO.Animations;
-            var gfx = owner.Graphic;
+            var gfx = (ushort)owner.Graphic; // PORT DEVIATION (GUO): uint art ids; bodies stay 16-bit
             animations.ConvertBodyIfNeeded(ref gfx);
             var animGroup = animations.GetAnimType(gfx);
             var animFlags = animations.GetAnimFlags(gfx);
@@ -4548,7 +4548,7 @@ namespace GUO.Network
                                 if (mobile != null)
                                 {
                                     mobile.SetAnimation(
-                                        Mobile.GetReplacedObjectAnimation(mobile.Graphic, animation)
+                                        Mobile.GetReplacedObjectAnimation((ushort)mobile.Graphic, animation)
                                     );
                                     mobile.ExecuteAnimation = false;
                                     mobile.AnimIndex = (byte)frame;
@@ -5940,7 +5940,7 @@ namespace GUO.Network
                         UpdatePlayer(
                             world,
                             cSerial,
-                            ent.Graphic,
+                            (ushort)ent.Graphic,
                             0,
                             ent.Hue,
                             ent.Flags,
@@ -5956,7 +5956,7 @@ namespace GUO.Network
                         UpdateGameObject(
                             world,
                             cSerial,
-                            ent.Graphic,
+                            (ushort)ent.Graphic,
                             0,
                             (ushort)(ent.Graphic == 0x2006 ? ((Item)ent).Amount : 0),
                             cx,
@@ -6493,7 +6493,7 @@ namespace GUO.Network
                 world.RangeSize.Y = y;
 
                 bool olddead = world.Player.IsDead;
-                ushort old_graphic = world.Player.Graphic;
+                ushort old_graphic = (ushort)world.Player.Graphic;
 
                 world.Player.CloseBank();
                 world.Player.Walker.WalkingFailed = false;

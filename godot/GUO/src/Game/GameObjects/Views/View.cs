@@ -101,7 +101,7 @@ namespace GUO.Game.GameObjects
 
         protected static void DrawStatic(
             UltimaBatcher2D batcher,
-            ushort graphic,
+            uint graphic, // PORT DEVIATION (GUO): data_formats section 53
             int x,
             int y,
             Vector3 hue,
@@ -137,7 +137,7 @@ namespace GUO.Game.GameObjects
                 int h = uv.Height - 44;
                 if (themed == null)
                 {
-                    ref var index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry(graphic + 0x4000);
+                    ref var index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry((int)graphic + 0x4000);
                     index.Width = (short)w;
                     index.Height = (short)h;
                 }
@@ -151,7 +151,7 @@ namespace GUO.Game.GameObjects
                 // Only pack HD textures use the user's HD filter choice.
                 // Native art stays nearest; Auto selects Point at 1:1
                 // texel display (scale == zoom), otherwise PointMipmaps.
-                if (themed == null && Client.Game.UO.Arts.TryGetHd(false, graphic, out Godot.Texture2D hdTex, out Rectangle hdUv, out _, out _))
+                if (themed == null && graphic <= ushort.MaxValue && Client.Game.UO.Arts.TryGetHd(false, (ushort)graphic, out Godot.Texture2D hdTex, out Rectangle hdUv, out _, out _))
                 {
                     var hdPos = new Vector2(x, y);
                     var hdScale = new Vector2((float)uv.Width / hdUv.Width, (float)uv.Height / hdUv.Height);
@@ -235,7 +235,7 @@ namespace GUO.Game.GameObjects
 
         protected static void DrawStaticRotated(
             UltimaBatcher2D batcher,
-            ushort graphic,
+            uint graphic, // PORT DEVIATION (GUO): data_formats section 53
             int x,
             int y,
             float angle,
@@ -268,7 +268,7 @@ namespace GUO.Game.GameObjects
             int h = uv.Height - 44;
             if (themed == null)
             {
-                ref var index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry(graphic + 0x4000);
+                ref var index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry((int)graphic + 0x4000);
                 index.Width = (short)w;
                 index.Height = (short)h;
             }
@@ -276,7 +276,7 @@ namespace GUO.Game.GameObjects
             // PORT DEVIATION (GUO): Enhanced HD, same rule-7 exception as
             // DrawStatic: native footprint, 1/k scale is implicit in the
             // dest rect (native size, HD source), with the chosen HD filter.
-            if (themed == null && Client.Game.UO.Arts.TryGetHd(false, graphic, out Godot.Texture2D hdTex, out Rectangle hdUv, out _, out _))
+            if (themed == null && graphic <= ushort.MaxValue && Client.Game.UO.Arts.TryGetHd(false, (ushort)graphic, out Godot.Texture2D hdTex, out Rectangle hdUv, out _, out _))
             {
                 batcher.Draw(
                     hdTex,
@@ -310,7 +310,7 @@ namespace GUO.Game.GameObjects
 
         protected static void DrawStaticAnimated(
             UltimaBatcher2D batcher,
-            ushort graphic,
+            uint graphic, // PORT DEVIATION (GUO): data_formats section 53
             int x,
             int y,
             Vector3 hue,
@@ -348,15 +348,15 @@ namespace GUO.Game.GameObjects
                 return;
             }
 
-            ref UOFileIndex index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry(graphic + 0x4000);
+            ref UOFileIndex index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry((int)graphic + 0x4000);
 
-            graphic = (ushort)(graphic + index.AnimOffset);
+            graphic = (uint)(graphic + index.AnimOffset);
 
             ref readonly var artInfo = ref Client.Game.UO.Arts.GetArt(graphic);
 
             if (artInfo.Texture != null)
             {
-                index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry(graphic + 0x4000);
+                index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry((int)graphic + 0x4000);
                 index.Width = (short)((artInfo.UV.Width >> 1) - 22);
                 index.Height = (short)(artInfo.UV.Height - 44);
 
@@ -368,7 +368,7 @@ namespace GUO.Game.GameObjects
                 // PORT DEVIATION (GUO): Enhanced HD, same rule-7 exception
                 // as DrawStatic: native footprint + 1/k scale, chosen HD
                 // filter for pack pixels; native shadow keeps Nearest.
-                if (themed == null && Client.Game.UO.Arts.TryGetHd(false, graphic, out Godot.Texture2D hdTex, out Rectangle hdUv, out _, out _))
+                if (themed == null && graphic <= ushort.MaxValue && Client.Game.UO.Arts.TryGetHd(false, (ushort)graphic, out Godot.Texture2D hdTex, out Rectangle hdUv, out _, out _))
                 {
                     var hdScale = new Vector2((float)artInfo.UV.Width / hdUv.Width, (float)artInfo.UV.Height / hdUv.Height);
                     if (shadow)

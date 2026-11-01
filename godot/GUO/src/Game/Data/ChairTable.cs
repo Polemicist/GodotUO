@@ -7,7 +7,7 @@ namespace GUO.Game.Data
 {
     internal static class ChairTable
     {
-        public static Dictionary<ushort, SittingInfoData> Table = new Dictionary<ushort, SittingInfoData>();
+        public static Dictionary<uint, SittingInfoData> Table = new Dictionary<uint, SittingInfoData>(); // PORT DEVIATION (GUO): seats follow uint art ids
 
         public static void Load()
         {

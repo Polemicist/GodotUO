@@ -400,7 +400,8 @@ namespace GUO.Game.UI.Gumps
                                 _ty = obj.Y;
                                 _tz = obj.Z;
                                 _hasTile = true;
-                                _targetGraphic = obj.Graphic;
+                                if (obj.Graphic > ushort.MaxValue) { GameActions.Print(World, $"SplatPlacer: art above 0xFFFF is not supported"); return; } // PORT DEVIATION (GUO): splat skins are keyed by 16-bit art
+                                _targetGraphic = (ushort)obj.Graphic;
                                 _targetObj = obj;
                                 GameActions.Print(World,
                                     $"SplatPlacer tile: {_tx}, {_ty}, {_tz} graphic 0x{_targetGraphic:X4}");
@@ -432,7 +433,8 @@ namespace GUO.Game.UI.Gumps
                                 _ty = obj.Y;
                                 _tz = obj.Z;
                                 _hasTile = true;
-                                _targetGraphic = obj.Graphic;
+                                if (obj.Graphic > ushort.MaxValue) { GameActions.Print(World, $"SplatPlacer: art above 0xFFFF is not supported"); return; } // PORT DEVIATION (GUO): splat skins are keyed by 16-bit art
+                                _targetGraphic = (ushort)obj.Graphic;
                                 _targetObj = obj;
                                 GameActions.Print(World,
                                     $"SplatPlacer selected: 0x{_targetGraphic:X4} at {_tx}, {_ty}, {_tz}");

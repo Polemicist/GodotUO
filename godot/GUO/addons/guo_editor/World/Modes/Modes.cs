@@ -283,7 +283,7 @@ internal sealed class IdsMode : CellMode
             return null;
         }
 
-        return Top(ctx.Data, x, y) is { } o ? Hash(o.Graphic) : Hash(ctx.Data.LandId(x, y)) * 0.4f;
+        return Top(ctx.Data, x, y) is { } o ? Hash((int)o.Graphic) : Hash(ctx.Data.LandId(x, y)) * 0.4f;
     }
 
     public override string Classify(ModeContext ctx, int x, int y) =>

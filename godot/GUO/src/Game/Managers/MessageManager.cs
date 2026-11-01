@@ -279,7 +279,7 @@ namespace GUO.Game.Managers
             {
                 Entity listener = _world.Player;
                 int distance = listener == null ? 20 : System.Math.Max(System.Math.Abs(mob.X - listener.X), System.Math.Abs(mob.Y - listener.Y));
-                GUO.IO.Audio.PackVoice.Speak(mob.Name, mob.Graphic, text, distance);
+                GUO.IO.Audio.PackVoice.Speak(mob.Name, (ushort)mob.Graphic, text, distance);
             }
 
             MessageReceived.Raise

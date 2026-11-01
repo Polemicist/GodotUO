@@ -262,6 +262,10 @@ namespace GUO.Game.Managers
         }
 
         /// <summary>The splat skin for a static at its position, or null.</summary>
+        // PORT DEVIATION (GUO): uint art ids (data_formats section 53); themes and variants are keyed by 16-bit art, so a wide id has none.
+        public static string StaticSplat(World world, int x, int y, uint original) =>
+            original <= ushort.MaxValue ? StaticSplat(world, x, y, (ushort)original) : null;
+
         public static string StaticSplat(World world, int x, int y, ushort original)
         {
             int facet = world?.MapIndex ?? -1;
@@ -295,6 +299,10 @@ namespace GUO.Game.Managers
         }
 
         /// <summary>The themed variant for a static at its position, or null.</summary>
+        // PORT DEVIATION (GUO): uint art ids (data_formats section 53); themes and variants are keyed by 16-bit art, so a wide id has none.
+        public static ushort? StaticVariant(World world, int x, int y, uint original) =>
+            original <= ushort.MaxValue ? StaticVariant(world, x, y, (ushort)original) : null;
+
         public static ushort? StaticVariant(World world, int x, int y, ushort original)
         {
             int facet = world?.MapIndex ?? -1;
@@ -489,6 +497,10 @@ namespace GUO.Game.Managers
         }
 
         /// <summary>Whether a multi of this graphic is skinned in this zone, and by which splat.</summary>
+        // PORT DEVIATION (GUO): uint art ids (data_formats section 53); themes and variants are keyed by 16-bit art, so a wide id has none.
+        public static string MultiSplat(World world, int x, int y, uint graphic) =>
+            graphic <= ushort.MaxValue ? MultiSplat(world, x, y, (ushort)graphic) : null;
+
         public static string MultiSplat(World world, int x, int y, ushort graphic)
         {
             int facet = world?.MapIndex ?? -1;

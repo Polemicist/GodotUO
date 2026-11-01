@@ -25,7 +25,7 @@ namespace GUO.Game.GameObjects
 
         public string Name => ItemData.Name;
 
-        public ushort OriginalGraphic { get; private set; }
+        public uint OriginalGraphic { get; private set; } // PORT DEVIATION (GUO): data_formats section 53
 
         public ref StaticTiles ItemData
         {
@@ -37,7 +37,7 @@ namespace GUO.Game.GameObjects
         public int Index;
 
 
-        public static Static Create(World world, ushort graphic, ushort hue, int index)
+        public static Static Create(World world, uint graphic, ushort hue, int index) // PORT DEVIATION (GUO): data_formats section 53
         {
             Static s = new Static(world); // _pool.GetOne();
             s.Graphic = s.OriginalGraphic = graphic;
@@ -65,7 +65,7 @@ namespace GUO.Game.GameObjects
             return s;
         }
 
-        public void SetGraphic(ushort g)
+        public void SetGraphic(uint g) // PORT DEVIATION (GUO): data_formats section 53
         {
             Graphic = g;
         }
@@ -89,7 +89,7 @@ namespace GUO.Game.GameObjects
             ushort? themed = image != null
                 ? null
                 : ThemeManager.StaticVariant(World, X, Y, OriginalGraphic);
-            SetGraphic(themed ?? SeasonManager.GetSeasonGraphic(World.Season, OriginalGraphic));
+            SetGraphic(themed ?? (OriginalGraphic <= ushort.MaxValue ? SeasonManager.GetSeasonGraphic(World.Season, (ushort)OriginalGraphic) : OriginalGraphic)); // PORT DEVIATION (GUO): season swaps exist only for 16-bit art
             AllowedToDraw = CanBeDrawn(World, Graphic);
             IsVegetation = StaticFilters.IsVegetation(Graphic);
         }

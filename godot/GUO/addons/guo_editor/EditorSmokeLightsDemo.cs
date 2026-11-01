@@ -144,7 +144,7 @@ public partial class EditorSmoke
         if (chunk == null) return false;
         for (GameObject o = chunk.GetHeadObject(x & 7, y & 7); o != null; o = o.TNext)
         {
-            ushort g = o is Static st ? st.Graphic : o is Multi mu ? mu.Graphic : (ushort)0;
+            uint g = o is Static st ? st.Graphic : o is Multi mu ? mu.Graphic : 0u;
             if (g == 0 || o.Z < ground - 2 || o.Z > ground + 16) continue;
             ref StaticTiles data = ref _data.Files.TileData.StaticData[g];
             if (data.IsWall || data.IsImpassable) return false;

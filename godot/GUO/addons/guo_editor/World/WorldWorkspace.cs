@@ -640,7 +640,7 @@ public partial class WorldView
         if (EffectivePicked() is not GameObject o || _data == null) return;
         _data.CurrentArt = o is Land ? o.Graphic : EditorData.LandCount + o.Graphic;
         BrushHue = o.Hue; _recipe.Land = o is Land; _targetPick.Select(_recipe.Land ? 1 : 0);
-        _status.Text = $"Picked {NameThenId(_data.CurrentArt, o.Graphic)} · Z {o.Z}";
+        _status.Text = $"Picked {NameThenId(_data.CurrentArt, (int)o.Graphic)} · Z {o.Z}";
     }
 
     private void TransformStackSelection()

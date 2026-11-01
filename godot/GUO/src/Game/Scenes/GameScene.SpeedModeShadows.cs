@@ -105,7 +105,7 @@ internal partial class GameScene
                 if(obj is Mobile) continue;
                 if(obj is not (Static or Multi or Item) || obj.Graphic>=tiles.Length) continue;
                 ref var td=ref tiles[obj.Graphic];
-                if(windows && WindowLightTable.BuiltIn.TryGetValue(obj.Graphic,out var opening))
+                if(windows && obj.Graphic <= ushort.MaxValue && WindowLightTable.BuiltIn.TryGetValue((ushort)obj.Graphic,out var opening))
                     CollectSpeedWindow(inputs,opening,obj,ray,view);
 
             }

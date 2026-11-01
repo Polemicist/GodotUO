@@ -168,7 +168,7 @@ namespace GUO.Game.Managers
                     //continue;
                 }
 
-                (int floorCheck1, int floorCheck2) = SeekGraphicInCustomHouseObjectList(Floors, item.Graphic);
+                (int floorCheck1, int floorCheck2) = SeekGraphicInCustomHouseObjectList(Floors, (ushort)item.Graphic);
 
                 CUSTOM_HOUSE_MULTI_OBJECT_FLAGS state = item.State;
 
@@ -188,7 +188,7 @@ namespace GUO.Game.Managers
                 }
                 else
                 {
-                    (int stairCheck1, int stairCheck2) = SeekGraphicInCustomHouseObjectList(Stairs, item.Graphic);
+                    (int stairCheck1, int stairCheck2) = SeekGraphicInCustomHouseObjectList(Stairs, (ushort)item.Graphic);
 
                     if (stairCheck1 != -1 && stairCheck2 != -1)
                     {
@@ -196,7 +196,7 @@ namespace GUO.Game.Managers
                     }
                     else
                     {
-                        (int roofCheck1, int roofCheck2) = SeekGraphicInCustomHouseObjectListWithCategory<CustomHouseRoof, CustomHouseRoofCategory>(Roofs, item.Graphic);
+                        (int roofCheck1, int roofCheck2) = SeekGraphicInCustomHouseObjectListWithCategory<CustomHouseRoof, CustomHouseRoofCategory>(Roofs, (ushort)item.Graphic);
 
                         if (roofCheck1 != -1 && roofCheck2 != -1)
                         {
@@ -204,11 +204,11 @@ namespace GUO.Game.Managers
                         }
                         else
                         {
-                            (int fixtureCheck1, int fixtureCheck2) = SeekGraphicInCustomHouseObjectList(Doors, item.Graphic);
+                            (int fixtureCheck1, int fixtureCheck2) = SeekGraphicInCustomHouseObjectList(Doors, (ushort)item.Graphic);
 
                             if (fixtureCheck1 == -1 || fixtureCheck2 == -1)
                             {
-                                (fixtureCheck1, fixtureCheck2) = SeekGraphicInCustomHouseObjectList(Teleports, item.Graphic);
+                                (fixtureCheck1, fixtureCheck2) = SeekGraphicInCustomHouseObjectList(Teleports, (ushort)item.Graphic);
 
                                 if (fixtureCheck1 != -1 && fixtureCheck2 != -1)
                                 {
@@ -283,7 +283,7 @@ namespace GUO.Game.Managers
                     {
                         Multi mo = house.Add
                         (
-                            floorMulti.Graphic,
+                            (ushort)floorMulti.Graphic,
                             0,
                             (ushort) (foundationItem.X + (x - foundationItem.X)),
                             (ushort) (foundationItem.Y + (y - foundationItem.Y)),
@@ -372,7 +372,7 @@ namespace GUO.Game.Managers
             {
                 if (place is Multi)
                 {
-                    SeekGraphic(place.Graphic);
+                    SeekGraphic((ushort)place.Graphic);
                 }
             }
             else if (place.Z >= _world.Player.Z + zOffset && place.Z < _world.Player.Z + 20)
@@ -534,24 +534,24 @@ namespace GUO.Game.Managers
                                 {
                                     int pz = piece.Z - (foundationItem.Z + (7 + (CurrentFloor - 1) * 20)) + (7 + (CurrentFloor - 1) * 20);
 
-                                    NetClient.Socket.Send_CustomHouseDeleteItem(_world, piece.Graphic, piece.X - foundationItem.X, piece.Y - foundationItem.Y, pz);
+                                    NetClient.Socket.Send_CustomHouseDeleteItem(_world, (ushort)piece.Graphic, piece.X - foundationItem.X, piece.Y - foundationItem.Y, pz);
                                     piece.Destroy();
                                 }
                             }
                             else
                             {
-                                NetClient.Socket.Send_CustomHouseDeleteItem(_world, place.Graphic, place.X - foundationItem.X, place.Y - foundationItem.Y, z);
+                                NetClient.Socket.Send_CustomHouseDeleteItem(_world, (ushort)place.Graphic, place.X - foundationItem.X, place.Y - foundationItem.Y, z);
                                 place.Destroy();
                             }
                         }
                         else if (type == CUSTOM_HOUSE_BUILD_TYPE.CHBT_ROOF)
                         {
-                            NetClient.Socket.Send_CustomHouseDeleteRoof(_world, place.Graphic, place.X - foundationItem.X, place.Y - foundationItem.Y, z);
+                            NetClient.Socket.Send_CustomHouseDeleteRoof(_world, (ushort)place.Graphic, place.X - foundationItem.X, place.Y - foundationItem.Y, z);
                             place.Destroy();
                         }
                         else
                         {
-                            NetClient.Socket.Send_CustomHouseDeleteItem(_world, place.Graphic, place.X - foundationItem.X, place.Y - foundationItem.Y, z);
+                            NetClient.Socket.Send_CustomHouseDeleteItem(_world, (ushort)place.Graphic, place.X - foundationItem.X, place.Y - foundationItem.Y, z);
                             place.Destroy();
                         }
                     }
@@ -1182,7 +1182,7 @@ namespace GUO.Game.Managers
                     continue;
                 }
 
-                ushort gr = mm.Graphic;
+                ushort gr = (ushort)mm.Graphic;
 
                 switch (SlotOf(gr))
                 {
@@ -1560,7 +1560,7 @@ namespace GUO.Game.Managers
                     continue;
                 }
 
-                bool legal = SlotOf(mm.Graphic) switch
+                bool legal = SlotOf((ushort)mm.Graphic) switch
                 {
                     0 => cell.FloorLegal,
                     2 => cell.RoofLegal,

@@ -291,7 +291,7 @@ namespace GUO.Game.Managers
                                             if (s)
                                             {
                                                 NetClient.Socket.Send_TargetObject(entity,
-                                                                                   entity.Graphic,
+                                                                                   (ushort)entity.Graphic,
                                                                                    entity.X,
                                                                                    entity.Y,
                                                                                    entity.Z,
@@ -347,7 +347,7 @@ namespace GUO.Game.Managers
 
 
                             NetClient.Socket.Send_TargetObject(entity,
-                                                               entity.Graphic,
+                                                               (ushort)entity.Graphic,
                                                                entity.X,
                                                                entity.Y,
                                                                entity.Z,

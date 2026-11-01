@@ -59,7 +59,7 @@ namespace GUO.Game.Scenes
         /// <paramref name="graphic"/> is the lit item's graphic (the light
         /// profile file's key, with the light id).
         /// </summary>
-        private void RecordRealtimeLight(GameObject obj, ushort graphic, ref LightData light)
+        private void RecordRealtimeLight(GameObject obj, uint graphic, ref LightData light)
         {
 #if DEBUG
             ObserveAttributionLight(obj,"record-source-entry");
@@ -340,7 +340,7 @@ namespace GUO.Game.Scenes
                                 break;
                             case Static or Multi:
                             {
-                                ushort graphic = obj.Graphic;
+                                uint graphic = obj.Graphic;
                                 if (graphic >= statics.Length) break;
                                 ref StaticTiles data = ref statics[graphic];
                                 if (data.IsRoof && obj.Z > groundZ)
@@ -456,7 +456,7 @@ namespace GUO.Game.Scenes
                 return false;
             }
 
-            ushort graphic = obj.Graphic;
+            uint graphic = obj.Graphic;
             if (graphic >= statics.Length) return false;
             ref StaticTiles data = ref statics[graphic];
             if (_noDrawRoofs && data.IsRoof) return false;

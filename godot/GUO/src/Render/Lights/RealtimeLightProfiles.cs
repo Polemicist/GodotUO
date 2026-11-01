@@ -235,11 +235,11 @@ namespace GUO.Renderer.Lights
         /// The profile for a light: the item's entry over the light id's entry
         /// over the file's default. Unset fields stay unset (keep the offer's).
         /// </summary>
-        public LightProfile Resolve(ushort itemGraphic, byte lightId)
+        public LightProfile Resolve(uint itemGraphic, byte lightId) // PORT DEVIATION (GUO): uint art ids; item profiles exist only for 16-bit art
         {
             LightProfile r = _default;
             if (_lights.TryGetValue(lightId, out LightProfile l)) r = l.Over(in r);
-            if (_items.TryGetValue(itemGraphic, out LightProfile i)) r = i.Over(in r);
+            if (itemGraphic <= ushort.MaxValue && _items.TryGetValue((ushort)itemGraphic, out LightProfile i)) r = i.Over(in r);
             return r;
         }
 

@@ -190,7 +190,7 @@ namespace GUO.Input.Gamepad
         // The status bar's lines (HealthBarGump): a meter's track and fill.
         public const ushort LineTrack = 0x0805, LineFill = 0x0809;
 
-        private static readonly Dictionary<ushort, Texture2D> _art = new();
+        private static readonly Dictionary<uint, Texture2D> _art = new();
         private static bool _ready;
 
         /// <summary>The item art for each wheel window: what it is in the world.</summary>
@@ -273,7 +273,7 @@ namespace GUO.Input.Gamepad
         public static Texture2D Gump(ushort id) => PregameAssets.Texture(id);
 
         /// <summary>An item's art as a texture of its own, or null while it is not readable yet.</summary>
-        public static Texture2D Art(ushort graphic)
+        public static Texture2D Art(uint graphic)
         {
             if (_art.TryGetValue(graphic, out Texture2D t))
             {

@@ -40,7 +40,7 @@ namespace GUO.Game.GameObjects
             // GameObject.ResolveTheme); themed objects draw the variant PNG.
             ResolveTheme();
 
-            ushort graphic = Graphic;
+            uint graphic = Graphic; // PORT DEVIATION (GUO): data_formats section 53
             ushort hue = Hue;
             bool partial = ItemData.IsPartialHue;
 
@@ -110,7 +110,7 @@ namespace GUO.Game.GameObjects
                 )
             )
             {
-                ushort graphic = Graphic;
+                uint graphic = Graphic; // PORT DEVIATION (GUO): data_formats section 53
 
                 bool isTree = StaticFilters.IsTree(graphic, out _);
 
@@ -119,7 +119,7 @@ namespace GUO.Game.GameObjects
                     graphic = Constants.TREE_REPLACE_GRAPHIC;
                 }
 
-                ref var index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry(graphic + 0x4000);
+                ref var index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry((int)graphic + 0x4000);
 
                 Point position = RealScreenPosition;
                 position.X -= index.Width;

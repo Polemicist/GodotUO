@@ -765,7 +765,7 @@ namespace GUO.Game.UI.Gumps
 
                 if (hair != null)
                 {
-                    ushort id = GetAnimID(mobile.Graphic, hair.Graphic, hair.ItemData.AnimID, mobile.IsFemale);
+                    ushort id = GetAnimID((ushort)mobile.Graphic, (ushort)hair.Graphic, hair.ItemData.AnimID, mobile.IsFemale);
 
                     Add
                     (
@@ -789,7 +789,7 @@ namespace GUO.Game.UI.Gumps
 
                 if (beard != null)
                 {
-                    ushort id = GetAnimID(mobile.Graphic, beard.Graphic, beard.ItemData.AnimID, mobile.IsFemale);
+                    ushort id = GetAnimID((ushort)mobile.Graphic, (ushort)beard.Graphic, beard.ItemData.AnimID, mobile.IsFemale);
 
                     Add
                     (

@@ -37,7 +37,7 @@ internal enum PhysicalUnknownReason : ushort
 
 /// <summary>Coordinates are X/Y tiles and native UO Z; no presentation/camera lift.</summary>
 internal readonly record struct PhysicalTriangle(N3 A, N3 B, N3 C,
-    PhysicalOwnerKey Owner, PhysicalMaterial Material, PhysicalProvenance Provenance, ushort Graphic = 0);
+    PhysicalOwnerKey Owner, PhysicalMaterial Material, PhysicalProvenance Provenance, uint Graphic = 0);
 
 internal readonly record struct PhysicalWorldDiagnostics(int NativeBlocks, int NativeStatics,
     int LiveItems, int MultiComponents, int ExcludedDecorative, int UnknownStructures,

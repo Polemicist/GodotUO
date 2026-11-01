@@ -117,7 +117,7 @@ namespace GUO.Game.GameObjects
                     }
                     else
                     {
-                        AnimationGraphic = Graphic;
+                        AnimationGraphic = (ushort)Graphic;
                     }
 
                     NextChangeFrameTime = (long)Time.Ticks + IntervalInMs;
@@ -125,7 +125,7 @@ namespace GUO.Game.GameObjects
             }
             else
             {
-                AnimationGraphic = Graphic;
+                AnimationGraphic = (ushort)Graphic;
             }
         }
 
@@ -142,7 +142,7 @@ namespace GUO.Game.GameObjects
             {
                 var tile = GetTarget();
                 GUO.Renderer.Lights.SpellLighting.Emit(GUO.Configuration.ProfileManager.CurrentProfile,
-                    Time.Ticks, GraphicEffectType.Moving, Graphic, tile.x, tile.y, tile.z, impact: true);
+                    Time.Ticks, GraphicEffectType.Moving, (ushort)Graphic, tile.x, tile.y, tile.z, impact: true);
             }
             if (CanCreateExplosionEffect)
             {

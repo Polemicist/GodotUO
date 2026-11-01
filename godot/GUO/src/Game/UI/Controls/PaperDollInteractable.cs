@@ -148,7 +148,7 @@ namespace GUO.Game.UI.Controls
                 }
             }
 
-            bool altTorso = mobile.IsFemale || IsGargoyleBody(mobile.Graphic);
+            bool altTorso = mobile.IsFemale || IsGargoyleBody((ushort)mobile.Graphic);
 
             Span<Layer> order = stackalloc Layer[PaperdollOrder.N];
             PaperdollOrder.Build(layerGraphics, altTorso, order);
@@ -172,8 +172,8 @@ namespace GUO.Game.UI.Controls
                     }
 
                     ushort id = GetAnimID(
-                        mobile.Graphic,
-                        equipItem.Graphic,
+                        (ushort)mobile.Graphic,
+                        (ushort)equipItem.Graphic,
                         equipItem.ItemData.AnimID,
                         mobile.IsFemale
                     );
@@ -209,7 +209,7 @@ namespace GUO.Game.UI.Controls
                 )
                 {
                     ushort id = GetAnimID(
-                        mobile.Graphic,
+                        (ushort)mobile.Graphic,
                         Client.Game.UO.GameCursor.ItemHold.Graphic,
                         Client.Game.UO.GameCursor.ItemHold.ItemData.AnimID,
                         mobile.IsFemale

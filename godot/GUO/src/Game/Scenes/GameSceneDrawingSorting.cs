@@ -232,7 +232,7 @@ namespace GUO.Game.Scenes
             }
         }
 
-        private void IsFoliageUnion(ushort graphic, int x, int y, int z)
+        private void IsFoliageUnion(uint graphic, int x, int y, int z)
         {
             for (int i = 0; i < _treeInfos.Length; i++)
             {
@@ -257,7 +257,7 @@ namespace GUO.Game.Scenes
             }
         }
 
-        private void ApplyFoliageTransparency(ushort graphic, int x, int y, int z)
+        private void ApplyFoliageTransparency(uint graphic, int x, int y, int z)
         {
             GameObject tile = _world.Map.GetTile(x, y);
 
@@ -265,7 +265,7 @@ namespace GUO.Game.Scenes
             {
                 for (GameObject obj = tile; obj != null; obj = obj.TNext)
                 {
-                    ushort testGraphic = obj.Graphic;
+                    uint testGraphic = obj.Graphic;
 
                     if (testGraphic == graphic && obj.Z == z)
                     {

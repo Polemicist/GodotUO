@@ -106,7 +106,7 @@ public partial class NativeStaticSceneProbe : Node
                     if(expectedGap.HasValue) {
                         float expectedY=target.RealScreenPosition.Y+44-expectedGap.Value;
                         int width=35;
-                        float foot=referenceGraphic==-1 ? 17 : FootX((ushort)(referenceGraphic??target.Graphic),out width);
+                        float foot=referenceGraphic==-1 ? 17 : FootX((ushort)(referenceGraphic??(int)target.Graphic),out width);
                         float expectedX=target.RealScreenPosition.X+22-(width>>1)+foot;
                         worst=Math.Max(worst,Math.Max(Math.Abs(contact.Y-expectedY),Math.Abs(contact.X-expectedX)));
                         Check(worst<=1,name+" opaque native contact within one native pixel");

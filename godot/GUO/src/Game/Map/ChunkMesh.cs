@@ -379,7 +379,7 @@ namespace GUO.Game.Map
                 }
             }
             else if (land.ThemedVariant?.Texture == null
-                && Client.Game.UO.Arts.TryGetHd(true, land.Graphic, out Texture2D hdTex, out _, out _, out _)
+                && Client.Game.UO.Arts.TryGetHd(true, (ushort)land.Graphic, out Texture2D hdTex, out _, out _, out _)
                 && hdTex != null)
             {
                 // PORT DEVIATION (GUO): Enhanced HD flat land bakes the HD
@@ -417,7 +417,7 @@ namespace GUO.Game.Map
             CountStaticLike(multi, ref multi.ItemData, multi.Graphic);
         }
 
-        private void CountStaticLike(GameObject obj, ref StaticTiles itemData, ushort graphic)
+        private void CountStaticLike(GameObject obj, ref StaticTiles itemData, uint graphic)
         {
             if (!TakeInstanceRank(obj, ref itemData, graphic))
                 return;
@@ -432,7 +432,7 @@ namespace GUO.Game.Map
         /// the same order, so the ranks agree. Past the slot field's seven
         /// per tile, a static stays queued (WorldDepthKey.MaxInstancedPerTile).
         /// </summary>
-        private bool TakeInstanceRank(GameObject obj, ref StaticTiles itemData, ushort graphic)
+        private bool TakeInstanceRank(GameObject obj, ref StaticTiles itemData, uint graphic)
         {
             if (!Instanceable(obj, ref itemData, graphic))
                 return false;
@@ -452,7 +452,7 @@ namespace GUO.Game.Map
         /// wobble (two scaled draws), a themed one (its variant PNG) and an
         /// HD one (another texture under another filter). Those stay queued.
         /// </summary>
-        private bool Instanceable(GameObject obj, ref StaticTiles itemData, ushort graphic)
+        private bool Instanceable(GameObject obj, ref StaticTiles itemData, uint graphic)
         {
             if (IsStaticExcludedFromMesh(graphic, ref itemData))
                 return false;
@@ -472,7 +472,7 @@ namespace GUO.Game.Map
             if (obj is Multi { IsHousePreview: true } || obj.Offset != Vector3.Zero)
                 return false;
 
-            if (Client.Game.UO.Arts.TryGetHd(false, graphic, out _, out _, out _, out _))
+            if (graphic <= ushort.MaxValue && Client.Game.UO.Arts.TryGetHd(false, (ushort)graphic, out _, out _, out _, out _))
                 return false;
 
             return Client.Game.UO.Arts.GetArt(graphic).Texture != null;
@@ -583,7 +583,7 @@ namespace GUO.Game.Map
                         land.MeshSpriteIndex = idx;
                         // PORT DEVIATION (GUO): Enhanced HD stretched
                         // fallback (no texmap): HD source, native dest.
-                        if (Client.Game.UO.Arts.TryGetHd(true, land.Graphic, out Texture2D hdTex, out Rectangle hdUv, out _, out _)
+                        if (Client.Game.UO.Arts.TryGetHd(true, (ushort)land.Graphic, out Texture2D hdTex, out Rectangle hdUv, out _, out _)
                             && hdTex != null)
                         {
                             Land.WriteQuadAtHd(idx, hdTex, hdUv,
@@ -621,7 +621,7 @@ namespace GUO.Game.Map
                     // HD uses the user's chosen filter; the
                     // mesh item filter is switched per HD run in
                     // UltimaBatcher2D.DrawMeshLayer so native keeps Nearest.
-                    if (Client.Game.UO.Arts.TryGetHd(true, land.Graphic, out Texture2D hdTex, out Rectangle hdUv, out _, out _)
+                    if (Client.Game.UO.Arts.TryGetHd(true, (ushort)land.Graphic, out Texture2D hdTex, out Rectangle hdUv, out _, out _)
                         && hdTex != null)
                     {
                         Land.WriteQuadAtHd(idx, hdTex, hdUv,
@@ -640,7 +640,7 @@ namespace GUO.Game.Map
         /// <summary>
         /// Checks if a static/multi should be excluded from the chunk mesh.
         /// </summary>
-        private static bool IsStaticExcludedFromMesh(ushort graphic, ref StaticTiles itemData)
+        private static bool IsStaticExcludedFromMesh(uint graphic, ref StaticTiles itemData)
         {
             // PORT DEVIATION (GUO): everything, for now.
             //
@@ -742,7 +742,7 @@ namespace GUO.Game.Map
             TryAddStaticLike(multi, ref multi.ItemData, multi.Graphic, multi.Hue);
         }
 
-        private void TryAddStaticLike(GameObject obj, ref StaticTiles itemData, ushort graphic, ushort hue)
+        private void TryAddStaticLike(GameObject obj, ref StaticTiles itemData, uint graphic, ushort hue)
         {
             int rank = _tileRank;
             if (!TakeInstanceRank(obj, ref itemData, graphic))
@@ -758,7 +758,7 @@ namespace GUO.Game.Map
             if (artInfo.Texture == null)
                 return;
 
-            ref var artIndex = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry(graphic + 0x4000);
+            ref var artIndex = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry((int)graphic + 0x4000);
             artIndex.Width = (short)((artInfo.UV.Width >> 1) - 22);
             artIndex.Height = (short)(artInfo.UV.Height - 44);
 

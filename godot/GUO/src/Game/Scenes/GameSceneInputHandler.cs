@@ -578,7 +578,7 @@ namespace GUO.Game.Scenes
                                     break;
 
                                 case GameObject o:
-                                    _world.TargetManager.Target(o.Graphic, o.X, o.Y, o.Z);
+                                    _world.TargetManager.Target((ushort)o.Graphic, o.X, o.Y, o.Z);
 
                                     break;
                             }
@@ -617,7 +617,7 @@ namespace GUO.Game.Scenes
                                     break;
 
                                 case GameObject o:
-                                    _world.TargetManager.Target(o.Graphic, o.X, o.Y, o.Z);
+                                    _world.TargetManager.Target((ushort)o.Graphic, o.X, o.Y, o.Z);
                                     UIManager.Add(new InspectorGump(_world, o));
 
                                     break;
@@ -660,7 +660,7 @@ namespace GUO.Game.Scenes
                         if (string.IsNullOrEmpty(name))
                         {
                             name = Client.Game.UO.FileManager.Clilocs.GetString(
-                                1020000 + st.Graphic,
+                                1020000 + (int)st.Graphic,
                                 st.ItemData.Name
                             );
                         }
@@ -690,7 +690,7 @@ namespace GUO.Game.Scenes
                         if (string.IsNullOrEmpty(name))
                         {
                             name = Client.Game.UO.FileManager.Clilocs.GetString(
-                                1020000 + multi.Graphic,
+                                1020000 + (int)multi.Graphic,
                                 multi.ItemData.Name
                             );
                         }

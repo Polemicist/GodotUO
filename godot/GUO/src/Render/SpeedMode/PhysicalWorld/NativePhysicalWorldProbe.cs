@@ -148,7 +148,7 @@ public partial class NativePhysicalWorldProbe : Node
         Save(); return shot;
     }
 
-    private Item Place(ushort graphic, int x, int y, int z)
+    private Item Place(uint graphic, int x, int y, int z)
     {
         // Prime the real decoded image before the mutation. The first changed draw
         // still has to rebuild native geometry; there is no authored receiver target.

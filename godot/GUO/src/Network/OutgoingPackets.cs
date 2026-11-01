@@ -381,7 +381,7 @@ namespace GUO.Network
 
             if (hair != null)
             {
-                writer.WriteUInt16BE(hair.Graphic);
+                writer.WriteUInt16BE((ushort)hair.Graphic);
                 writer.WriteUInt16BE(hair.Hue);
             }
             else
@@ -393,7 +393,7 @@ namespace GUO.Network
 
             if (beard != null)
             {
-                writer.WriteUInt16BE(beard.Graphic);
+                writer.WriteUInt16BE((ushort)beard.Graphic);
                 writer.WriteUInt16BE(beard.Hue);
             }
             else

@@ -67,11 +67,11 @@ namespace GUO.Renderer.Lights
         /// <summary>Fewest columns a face spans.</summary>
         public const int MinColumns = 6;
 
-        private static readonly Dictionary<ushort, WallFaces> _cache = new();
+        private static readonly Dictionary<uint, WallFaces> _cache = new();
         private static object _artSource;
 
         /// <summary>The faces of a static's art (cached per graphic); none when it reads as no wall plane.</summary>
-        public static WallFaces For(ushort graphic)
+        public static WallFaces For(uint graphic)
         {
             var arts = Client.Game?.UO?.FileManager?.Arts;
             if (!ReferenceEquals(_artSource, arts))

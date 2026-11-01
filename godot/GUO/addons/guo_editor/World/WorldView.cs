@@ -1271,7 +1271,7 @@ public partial class WorldView : VBoxContainer
         if (_data?.IsLoaded == true && o is Land or Static or Item)
         {
             _data.CurrentArt = index;
-            AssetActions.Add(inspection, _data, land ? AssetKind.Land : AssetKind.Static, o.Graphic, inspection.Image);
+            AssetActions.Add(inspection, _data, land ? AssetKind.Land : AssetKind.Static, (int)o.Graphic, inspection.Image);
         }
         Inspect?.Invoke(inspection);
         return inspection;
