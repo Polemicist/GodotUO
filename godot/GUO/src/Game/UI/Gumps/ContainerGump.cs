@@ -1,5 +1,6 @@
 ﻿// SPDX-License-Identifier: BSD-2-Clause
 
+using GUO.Assets;
 using GUO.Configuration;
 using GUO.Game.Data;
 using GUO.Game.GameObjects;
@@ -580,10 +581,8 @@ namespace GUO.Game.UI.Gumps
                 ItemGump itemControl = new ItemGump(
                     this,
                     item.Serial,
-                    (ushort)(
-                        item.DisplayedGraphic
-                        - ((IsChessboard || IsBackgammonBoard) ? Constants.ITEM_GUMP_TEXTURE_OFFSET : 0)
-                    ),
+                    item.DisplayedGraphic // PORT DEVIATION (GUO): item art above 0xFFFF (data_formats section 53)
+                        - ((IsChessboard || IsBackgammonBoard) ? (uint)Constants.ITEM_GUMP_TEXTURE_OFFSET : 0u),
                     item.Hue,
                     item.X,
                     item.Y,
@@ -636,6 +635,20 @@ namespace GUO.Game.UI.Gumps
 
                 boundWidth -= (int)(spriteInfo.UV.Width / scale);
                 boundHeight -= (int)(spriteInfo.UV.Height / scale);
+            }
+
+            // PORT DEVIATION (GUO): under the wide art profile a wide item first arrives with a 16-bit
+            // stand-in that can be far larger than the bag; clamping to it would push the item out
+            // for good. A picture that cannot fit keeps the shard's spot inside the bag, else the top-left.
+            if (WideArtProfile.Enabled && (boundWidth < boundX || boundHeight < boundY))
+            {
+                if (item.X < boundX || item.X > dataBounds.Width || item.Y < boundY || item.Y > dataBounds.Height + (IsChessboard ? 20 : 0))
+                {
+                    item.X = (ushort)boundX;
+                    item.Y = (ushort)boundY;
+                }
+
+                return;
             }
 
             if (item.X < boundX)

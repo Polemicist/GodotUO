@@ -15,11 +15,11 @@ namespace GUO.Game.UI.Controls
 {
     internal class ItemGump : Control
     {
-        private ushort _graphic;
+        private uint _graphic; // PORT DEVIATION (GUO): item art above 0xFFFF (data_formats section 53)
         private readonly bool _is_gump;
         private readonly Gump _gump;
 
-        public ItemGump(Gump gump, uint serial, ushort graphic, ushort hue, int x, int y, bool is_gump = false)
+        public ItemGump(Gump gump, uint serial, uint graphic, ushort hue, int x, int y, bool is_gump = false)
         {
             _gump = gump;
             _is_gump = is_gump;
@@ -39,7 +39,7 @@ namespace GUO.Game.UI.Controls
             SetTooltip(serial);
         }
 
-        public ushort Graphic
+        public uint Graphic
         {
             get => _graphic;
             set

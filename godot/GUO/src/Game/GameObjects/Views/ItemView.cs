@@ -58,7 +58,7 @@ namespace GUO.Game.GameObjects
             }
 
             ushort hue = Hue;
-            ushort graphic = DisplayedGraphic;
+            uint graphic = DisplayedGraphic; // PORT DEVIATION (GUO): data_formats section 53
             bool partial = ItemData.IsPartialHue;
 
             if (OnGround)
@@ -461,7 +461,7 @@ namespace GUO.Game.GameObjects
                     return false;
                 }
 
-                ushort graphic = DisplayedGraphic;
+                uint graphic = DisplayedGraphic; // PORT DEVIATION (GUO): data_formats section 53
 
                 if (OnGround && ItemData.IsAnimated)
                 {
@@ -481,7 +481,7 @@ namespace GUO.Game.GameObjects
                     else
                     {
                         ref UOFileIndex index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry(
-                            graphic + 0x4000
+                            (int)graphic + 0x4000
                         );
 
                         graphic += (ushort)index.AnimOffset;
@@ -490,7 +490,7 @@ namespace GUO.Game.GameObjects
 
                 if (Client.Game.UO.Arts.GetArt(graphic).Texture != null)
                 {
-                    ref var index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry(graphic + 0x4000);
+                    ref var index = ref Client.Game.UO.FileManager.Arts.File.GetValidRefEntry((int)graphic + 0x4000);
 
                     Point position = RealScreenPosition;
                     position.X += (int)Offset.X;

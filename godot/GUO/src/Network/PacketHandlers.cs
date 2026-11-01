@@ -1413,7 +1413,7 @@ namespace GUO.Network
 
                         gump.AddItem(
                             it.Serial,
-                            (ushort)it.Graphic,
+                            it.Graphic, // PORT DEVIATION (GUO): item art above 0xFFFF (data_formats section 53)
                             it.Hue,
                             it.Amount,
                             it.Price,
@@ -2295,6 +2295,8 @@ namespace GUO.Network
                 {
                     NetClient.Socket.Send_ClientViewRange(world.ClientViewRange);
                 }
+
+                WideArtManager.SendHello(); // PORT DEVIATION (GUO): opt-in wide item art, data_formats section 53
 
                 List<Gump> gumps = ProfileManager.CurrentProfile.ReadGumps(
                     world,
@@ -4787,6 +4789,12 @@ namespace GUO.Network
 
                     break;
 
+                // PORT DEVIATION (GUO): an item's real art above 0xFFFF, read only under the wide art profile (data_formats section 53).
+                case WideArtManager.SUB_COMMAND when WideArtProfile.Enabled:
+                    WideArtManager.OnPacket(world, ref p);
+
+                    break;
+
                 default:
                     Log.Warn($"Unhandled 0xBF - sub: {cmd.ToHex()}");
 
@@ -6093,7 +6101,7 @@ namespace GUO.Network
         private static void AddItemToContainer(
             World world,
             uint serial,
-            ushort graphic,
+            uint graphic, // PORT DEVIATION (GUO): item art above 0xFFFF (data_formats section 53)
             ushort amount,
             ushort x,
             ushort y,

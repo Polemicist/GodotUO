@@ -162,7 +162,7 @@ namespace GUO.Game.GameObjects
             LastAnimationChangeTime = 0;
         }
 
-        public Item FindItem(ushort graphic, ushort hue = 0xFFFF)
+        public Item FindItem(uint graphic, ushort hue = 0xFFFF) // PORT DEVIATION (GUO): item art above 0xFFFF (data_formats section 53)
         {
             Item item = null;
 

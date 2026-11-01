@@ -33,7 +33,7 @@ namespace GUO.Game.UI.Gumps
             private AlphaBlendControl _background;
             private readonly CounterBarGump _gump;
 
-            public CounterItem(CounterBarGump gump, ushort graphic, ushort? hue, int compareTo)
+            public CounterItem(CounterBarGump gump, uint graphic, ushort? hue, int compareTo)
             {
                 _gump = gump;
                 CompareTo = compareTo;
@@ -49,13 +49,13 @@ namespace GUO.Game.UI.Gumps
                 SetGraphic(graphic, hue);
             }
 
-            public ushort Graphic { get; private set; }
+            public uint Graphic { get; private set; } // PORT DEVIATION (GUO): item art above 0xFFFF (data_formats section 53)
 
             public ushort? Hue { get; private set; }
 
             public int CompareTo { get; private set; }
 
-            public void SetGraphic(ushort graphic, ushort? hue)
+            public void SetGraphic(uint graphic, ushort? hue)
             {
                 _image.ChangeGraphic(graphic, hue ?? 0);
 
@@ -434,7 +434,7 @@ namespace GUO.Game.UI.Gumps
             private class ImageWithText : Control
             {
                 private readonly Label _label;
-                private ushort _graphic;
+                private uint _graphic;
                 private ushort _hue;
                 private bool _partial;
 
@@ -453,7 +453,7 @@ namespace GUO.Game.UI.Gumps
                     Add(_label);
                 }
 
-                public void ChangeGraphic(ushort graphic, ushort hue)
+                public void ChangeGraphic(uint graphic, ushort hue)
                 {
                     if (graphic != 0)
                     {

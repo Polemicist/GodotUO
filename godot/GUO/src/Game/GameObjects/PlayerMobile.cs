@@ -232,7 +232,7 @@ namespace GUO.Game.GameObjects
             return item;
         }
 
-        public int GetTotalAmountOfItem(ushort graphic, ushort? hue)
+        public int GetTotalAmountOfItem(uint graphic, ushort? hue) // PORT DEVIATION (GUO): data_formats section 53
         {
             int _amount = 0;
 

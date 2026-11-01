@@ -63,14 +63,14 @@ namespace GUO.Game.GameObjects
         //    }
         //);
 
-        private ushort? _displayedGraphic;
+        private uint? _displayedGraphic; // PORT DEVIATION (GUO): item art above 0xFFFF (data_formats section 53)
         private bool _isMulti;
 
         public Item(World world) : base(world, 0) { }
 
         public bool IsCoin => Graphic == 0x0EEA || Graphic == 0x0EED || Graphic == 0x0EF0;
 
-        public ushort DisplayedGraphic
+        public uint DisplayedGraphic
         {
             get
             {
@@ -83,12 +83,12 @@ namespace GUO.Game.GameObjects
                 {
                     if (Amount > 5)
                     {
-                        return (ushort)(Graphic + 2);
+                        return Graphic + 2;
                     }
 
                     if (Amount > 1)
                     {
-                        return (ushort)(Graphic + 1);
+                        return Graphic + 1;
                     }
                 }
                 else if (IsMulti)
@@ -96,7 +96,7 @@ namespace GUO.Game.GameObjects
                     return MultiGraphic;
                 }
 
-                return (ushort)Graphic; // PORT DEVIATION (GUO): uint art ids; the display id stays 16-bit
+                return Graphic;
             }
             set => _displayedGraphic = value;
         }
@@ -545,7 +545,7 @@ namespace GUO.Game.GameObjects
             }
         }
 
-        public void GetTotalAmount(ushort graphic, ushort? hue, ref int amount)
+        public void GetTotalAmount(uint graphic, ushort? hue, ref int amount) // PORT DEVIATION (GUO): data_formats section 53
         {
             for (LinkedObject i = Items; i != null; i = i.Next)
             {

@@ -4569,3 +4569,13 @@ On:
   bridge's shard stores 16-bit ids. A world selection made into a multi skips
   such statics, since multi components are 16-bit. Asset edits (art, tiledata,
   cliloc tile sync) and multis stay at 0x0000-0xFFFF.
+- Items: `Item.DisplayedGraphic`, the held item, item gumps, counters, shop
+  and trade lines carry uint art. Stock packets carry 16 bits (worn items in
+  0x78 only 15), so a shard with wider item art sends the real id separately
+  in 0xBF sub 0x7E55: the client sends op 0 HELLO (version byte 1) after login;
+  the shard sends op 1 ART (serial u32, art u32, big endian) right after any
+  stock packet carrying such an item, and op 4 to ask for a fresh HELLO. Off
+  the profile the client sends no HELLO and ignores the sub-command. An art id
+  past tiledata is ignored. Until the ART arrives, a container keeps an item
+  whose 16-bit stand-in is larger than the bag at its own spot instead of
+  clamping it out of the bag.

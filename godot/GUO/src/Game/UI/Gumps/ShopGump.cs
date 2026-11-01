@@ -333,7 +333,7 @@ namespace GUO.Game.UI.Gumps
 
         public void AddItem(
             uint serial,
-            ushort graphic,
+            uint graphic, // PORT DEVIATION (GUO): item art above 0xFFFF (data_formats section 53)
             ushort hue,
             ushort amount,
             uint price,
@@ -635,7 +635,7 @@ namespace GUO.Game.UI.Gumps
             public ShopItem(
                 ShopGump gump,
                 uint serial,
-                ushort graphic,
+                uint graphic,
                 ushort hue,
                 int count,
                 uint price,
@@ -737,7 +737,7 @@ namespace GUO.Game.UI.Gumps
 
             public uint Price { get; }
             public ushort Hue { get; }
-            public ushort Graphic { get; }
+            public uint Graphic { get; }
             public string Name { get; }
 
             public bool NameFromCliloc { get; set; }
@@ -783,7 +783,7 @@ namespace GUO.Game.UI.Gumps
                 if (InBuyGump && SerialHelper.IsMobile(LocalSerial))
                 {
                     var animations = Client.Game.UO.Animations;
-                    ushort graphic = Graphic;
+                    ushort graphic = Graphic < animations.MaxAnimationCount ? (ushort)Graphic : (ushort)0; // PORT DEVIATION (GUO): a mobile's body is 16-bit
 
                     if (graphic >= animations.MaxAnimationCount)
                     {
@@ -903,7 +903,7 @@ namespace GUO.Game.UI.Gumps
 
             public TransactionItem(
                 uint serial,
-                ushort graphic,
+                uint graphic,
                 ushort hue,
                 int amount,
                 uint price,
@@ -1065,7 +1065,7 @@ namespace GUO.Game.UI.Gumps
                 Amount = amount;
             }
 
-            public ushort Graphic { get; }
+            public uint Graphic { get; }
             public ushort Hue { get; }
 
             public uint Price { get; }

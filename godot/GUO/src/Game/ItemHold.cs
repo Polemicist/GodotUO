@@ -22,8 +22,8 @@ namespace GUO.Game
         public sbyte Z { get; private set; }
         public uint Container { get; private set; }
         public uint Serial { get; private set; }
-        public ushort Graphic { get; private set; }
-        public ushort DisplayedGraphic { get; private set; }
+        public uint Graphic { get; private set; } // PORT DEVIATION (GUO): item art above 0xFFFF (data_formats section 53)
+        public uint DisplayedGraphic { get; private set; }
         public bool IsGumpTexture { get; set; }
         public ushort Hue { get; private set; }
         public ushort Amount { get; private set; }
@@ -60,8 +60,8 @@ namespace GUO.Game
         {
             Enabled = true;
             Serial = item.Serial;
-            Graphic = (ushort)item.Graphic; // PORT DEVIATION (GUO): uint art ids
-            DisplayedGraphic = item.IsCoin && amount == 1 ? (ushort)item.Graphic : item.DisplayedGraphic;
+            Graphic = item.Graphic;
+            DisplayedGraphic = item.IsCoin && amount == 1 ? item.Graphic : item.DisplayedGraphic;
             X = item.X;
             Y = item.Y;
             Z = item.Z;

@@ -210,7 +210,7 @@ namespace GUO.Game.UI.Controls
                 {
                     ushort id = GetAnimID(
                         (ushort)mobile.Graphic,
-                        Client.Game.UO.GameCursor.ItemHold.Graphic,
+                        (ushort)Client.Game.UO.GameCursor.ItemHold.Graphic,
                         Client.Game.UO.GameCursor.ItemHold.ItemData.AnimID,
                         mobile.IsFemale
                     );

@@ -150,13 +150,13 @@ namespace GUO.Game
 
         // PORT DEVIATION (GUO): internal, not private, so the second screen of
         // a dual-screen device can draw the held item the same way (DualScreen).
-        internal ushort GetDraggingItemGraphic()
+        internal uint GetDraggingItemGraphic() // PORT DEVIATION (GUO): item art above 0xFFFF (data_formats section 53)
         {
             if (ItemHold.Enabled)
             {
                 if (ItemHold.IsGumpTexture)
                 {
-                    return (ushort)(ItemHold.DisplayedGraphic - Constants.ITEM_GUMP_TEXTURE_OFFSET);
+                    return ItemHold.DisplayedGraphic - Constants.ITEM_GUMP_TEXTURE_OFFSET;
                 }
 
                 return ItemHold.DisplayedGraphic;
@@ -167,7 +167,7 @@ namespace GUO.Game
 
         internal Point GetDraggingItemOffset()
         {
-            ushort graphic = GetDraggingItemGraphic();
+            uint graphic = GetDraggingItemGraphic();
 
             if (graphic == 0xFFFF)
             {
@@ -240,7 +240,7 @@ namespace GUO.Game
             {
                 return;
             }
-            ushort draggingGraphic = GetDraggingItemGraphic();
+            uint draggingGraphic = GetDraggingItemGraphic();
 
             if (draggingGraphic == 0xFFFF || !ItemHold.IsFixedPosition || UIManager.IsDragging)
             {
@@ -444,7 +444,7 @@ namespace GUO.Game
                     scale = UIManager.ContainerScale;
                 }
 
-                ushort draggingGraphic = GetDraggingItemGraphic();
+                uint draggingGraphic = GetDraggingItemGraphic();
 
                 ref readonly var artInfo = ref (ItemHold.IsGumpTexture ? ref Client.Game.UO.Gumps.GetGump(draggingGraphic) : ref Client.Game.UO.Arts.GetArt(draggingGraphic));
 

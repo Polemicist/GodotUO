@@ -44,7 +44,7 @@ namespace GUO.Input.Gamepad
         {
             public string Label;
             public string Detail;
-            public ushort Art;
+            public uint Art;
             public uint Serial;
             public bool Wearable;
             public Action Act;
@@ -191,8 +191,8 @@ namespace GUO.Input.Gamepad
         public static string FocusLabel =>
             _focus >= 0 && _focus < _lines.Count ? (_lines[_focus].Label ?? "") : "";
 
-        public static ushort FocusArt =>
-            _focus >= 0 && _focus < _lines.Count ? _lines[_focus].Art : (ushort)0;
+        public static uint FocusArt =>
+            _focus >= 0 && _focus < _lines.Count ? _lines[_focus].Art : 0u;
 
         public static int Columns => _cols;
 
@@ -1700,7 +1700,7 @@ namespace GUO.Input.Gamepad
         private static ulong _packBodyOf;
         private static Texture2D _dollHero;
         private static int _dollStamp = int.MinValue;
-        private static readonly System.Collections.Generic.Dictionary<(ushort, int), Texture2D> _iconScaleCache = new();
+        private static readonly System.Collections.Generic.Dictionary<(uint, int), Texture2D> _iconScaleCache = new();
 
 
 
@@ -2315,7 +2315,7 @@ namespace GUO.Input.Gamepad
 
             for (int i = first; i < last; i++)
             {
-                h = (h * 31) ^ (int)_lines[i].Serial ^ _lines[i].Art ^ (i == _focus ? 1 : 0);
+                h = (h * 31) ^ (int)_lines[i].Serial ^ (int)_lines[i].Art ^ (i == _focus ? 1 : 0);
             }
 
             return h;
@@ -2325,7 +2325,7 @@ namespace GUO.Input.Gamepad
         /// Largest whole-number nearest upscale of item art that fits in ~70% of
         /// <paramref name="cell"/>. Baked into a new texture so draw size is real.
         /// </summary>
-        private static Texture2D ScaledIcon(ushort graphic, float cell)
+        private static Texture2D ScaledIcon(uint graphic, float cell)
         {
             Texture2D src = PadArt.Art(graphic);
 
@@ -2441,7 +2441,7 @@ namespace GUO.Input.Gamepad
             foreach (Layer layer in Worn)
             {
                 Item item = mobile.FindItemByLayer(layer);
-                h = (h * 31) ^ (item == null ? 0 : (int)item.Serial ^ item.DisplayedGraphic ^ item.Hue);
+                h = (h * 31) ^ (item == null ? 0 : (int)item.Serial ^ (int)item.DisplayedGraphic ^ item.Hue);
             }
 
             Item hair = mobile.FindItemByLayer(Layer.Hair);

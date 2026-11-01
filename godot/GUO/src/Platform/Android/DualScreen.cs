@@ -446,7 +446,7 @@ namespace GUO.Platform.Android
             }
 
             ItemHold hold = cursor.ItemHold;
-            ushort graphic = cursor.GetDraggingItemGraphic();
+            uint graphic = cursor.GetDraggingItemGraphic();
 
             if (graphic == 0xFFFF)
             {
